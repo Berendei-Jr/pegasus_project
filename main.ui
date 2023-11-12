@@ -654,7 +654,7 @@ Button */
               </font>
              </property>
              <property name="text">
-              <string>PyDracula</string>
+              <string>Pegasus</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -701,6 +701,12 @@ Button */
              </property>
              <property name="text">
               <string>TextLabel</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="indent">
+              <number>0</number>
              </property>
             </widget>
            </widget>
@@ -887,10 +893,10 @@ Button */
                    <enum>Qt::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-file.png);</string>
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-camera.png);</string>
                   </property>
                   <property name="text">
-                   <string>New</string>
+                   <string>Dashboard</string>
                   </property>
                  </widget>
                 </item>
@@ -1970,11 +1976,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                        </sizepolicy>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">background-position: center;
-background-image: url(:/images/images/images/5c8a25b5cdad6d02b006e485.png);
-background-repeat: no-repeat;</string>
+                       <string notr="true"/>
                       </property>
-                      <widget class="QWidget" name="">
+                      <widget class="QWidget" name="layoutWidget">
                        <property name="geometry">
                         <rect>
                          <x>10</x>

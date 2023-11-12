@@ -1,26 +1,9 @@
-# ///////////////////////////////////////////////////////////////
-#
-# BY: WANDERSON M.PIMENTA
-# PROJECT MADE WITH: Qt Designer and PySide6
-# V: 1.0.0
-#
-# This project can be used freely for all uses, as long as they maintain the
-# respective credits only in the Python scripts, any information in the visual
-# interface (GUI) can be modified without any implication.
-#
-# There are limitations on Qt licenses if you want to use your products
-# commercially, I recommend reading them on the official website:
-# https://doc.qt.io/qtforpython/licenses.html
-#
-# ///////////////////////////////////////////////////////////////
-
 import sys
 import os
 import platform
 import time
+import logging
 
-# IMPORT / GUI AND MODULES AND WIDGETS
-# ///////////////////////////////////////////////////////////////
 from modules import *
 from widgets import *
 from camera_handler.camera_handler import CameraHandler
@@ -50,6 +33,9 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         title = "Pegasus"
         description = "Security cameras dashboard"
+        logo = QPixmap('./images/images/image.png')
+        logo = logo.scaled(58, 58, Qt.KeepAspectRatio)
+        widgets.logoLabel.setPixmap(logo)
         # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -74,6 +60,7 @@ class MainWindow(QMainWindow):
         #widgets.btn_widgets.clicked.connect(self.buttonClick)
         widgets.btn_new.clicked.connect(self.buttonClick)
         widgets.btn_save.clicked.connect(self.buttonClick)
+        widgets.btn_exit.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
@@ -102,23 +89,26 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
+        widgets.pushButtonOpenCamera.clicked.connect(self.open_camera_dashboard)
 
+        self.frame_update_timer = QTimer()
+        self.frame_update_timer.timeout.connect(self.update_frame)
         self.cameraHadler = CameraHandler()
-        self.change = False
-        #self.main_loop()
 
+    def open_camera_dashboard(self):
+        widgets.btn_new.click()
 
-    def main_loop(self):
-        while True:
-            if self.change:
-                for frame in self.cameraHadler.start():
-                    print("AAAAAAAAAa")
-                    height, width, channel = frame.shape
-                    bytesPerLine = 3 * width
-                    qImg = QImage(frame.data, width, height, bytesPerLine, QImage.Format_RGB888)
-                    widgets.videoLabel.setPixmap(QPixmap.fromImage(qImg))
-
-                    time.sleep(1)
+    def update_frame(self):
+        try:
+            frame = self.cameraHadler.get_frame()
+        except BufferError as error:
+            logging.error(error)
+            sys.exit(1)
+        height, width, channel = frame.shape
+        bytesPerLine = 3 * width
+        pixmap = QPixmap.fromImage(QImage(frame.data, width, height, bytesPerLine, QImage.Format_RGB888))
+        pixmap = pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)
+        widgets.videoLabel.setPixmap(pixmap)
 
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
@@ -142,14 +132,17 @@ class MainWindow(QMainWindow):
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
+            self.cameraHadler.set_options(motion_detection=widgets.checkBoxMotionDetection.isChecked(), face_id=widgets.checkBoxFaceID.isChecked())
             widgets.stackedWidget.setCurrentWidget(widgets.video_page) # SET PAGE
+            self.frame_update_timer.start(40)
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
-            self.change = True
-            
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
+        
+        if btnName == "btn_exit":
+            sys.exit(0)
 
         # PRINT BTN NAME
         print(f'Button "{btnName}" pressed!')

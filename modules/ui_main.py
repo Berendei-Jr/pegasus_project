@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainkCeGyE.ui'
+## Form generated from reading UI file 'mainDRwHLJ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.0
 ##
@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, QTimer)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
@@ -611,6 +611,8 @@ class Ui_MainWindow(object):
         self.logoLabel = QLabel(self.topLogoInfo)
         self.logoLabel.setObjectName(u"logoLabel")
         self.logoLabel.setGeometry(QRect(0, 0, 61, 51))
+        self.logoLabel.setAlignment(Qt.AlignCenter)
+        self.logoLabel.setIndent(0)
 
         self.verticalLayout_3.addWidget(self.topLogoInfo)
 
@@ -677,7 +679,7 @@ class Ui_MainWindow(object):
         self.btn_new.setFont(font)
         self.btn_new.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_new.setLayoutDirection(Qt.LeftToRight)
-        self.btn_new.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-file.png);")
+        self.btn_new.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-camera.png);")
 
         self.verticalLayout_8.addWidget(self.btn_new)
 
@@ -689,7 +691,7 @@ class Ui_MainWindow(object):
         self.btn_save.setFont(font)
         self.btn_save.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_save.setLayoutDirection(Qt.LeftToRight)
-        self.btn_save.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-save.png)")
+        self.btn_save.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-settings.png)")
 
         self.verticalLayout_8.addWidget(self.btn_save)
 
@@ -1087,16 +1089,14 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.home.sizePolicy().hasHeightForWidth())
         self.home.setSizePolicy(sizePolicy3)
-        self.home.setStyleSheet(u"background-position: center;\n"
-"background-image: url(:/images/images/images/5c8a25b5cdad6d02b006e485.png);\n"
-"background-repeat: no-repeat;")
-        self.widget = QWidget(self.home)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(10, 360, 421, 223))
-        self.verticalLayout_21 = QVBoxLayout(self.widget)
+        self.home.setStyleSheet(u"")
+        self.layoutWidget = QWidget(self.home)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.layoutWidget.setGeometry(QRect(10, 360, 421, 223))
+        self.verticalLayout_21 = QVBoxLayout(self.layoutWidget)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.verticalLayout_21.setContentsMargins(0, 0, 0, 0)
-        self.textEdit_2 = QTextEdit(self.widget)
+        self.textEdit_2 = QTextEdit(self.layoutWidget)
         self.textEdit_2.setObjectName(u"textEdit_2")
         self.textEdit_2.setStyleSheet(u"background: transparent;")
 
@@ -1104,13 +1104,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.checkBoxMotionDetection = QCheckBox(self.widget)
+        self.checkBoxMotionDetection = QCheckBox(self.layoutWidget)
         self.checkBoxMotionDetection.setObjectName(u"checkBoxMotionDetection")
         self.checkBoxMotionDetection.setStyleSheet(u"background: transparent;")
 
         self.horizontalLayout_6.addWidget(self.checkBoxMotionDetection)
 
-        self.checkBoxFaceID = QCheckBox(self.widget)
+        self.checkBoxFaceID = QCheckBox(self.layoutWidget)
         self.checkBoxFaceID.setObjectName(u"checkBoxFaceID")
         self.checkBoxFaceID.setLayoutDirection(Qt.LeftToRight)
         self.checkBoxFaceID.setStyleSheet(u"background: transparent;")
@@ -1118,7 +1118,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6.addWidget(self.checkBoxFaceID)
 
-        self.pushButtonOpenCamera = QPushButton(self.widget)
+        self.pushButtonOpenCamera = QPushButton(self.layoutWidget)
         self.pushButtonOpenCamera.setObjectName(u"pushButtonOpenCamera")
         self.pushButtonOpenCamera.setStyleSheet(u"background: transparent;")
 
@@ -1554,13 +1554,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.titleLeftApp.setText(QCoreApplication.translate("MainWindow", u"PyDracula", None))
+        self.titleLeftApp.setText(QCoreApplication.translate("MainWindow", u"Pegasus", None))
         self.titleLeftDescription.setText(QCoreApplication.translate("MainWindow", u"Server for STM32 based device", None))
         self.logoLabel.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
-        self.btn_new.setText(QCoreApplication.translate("MainWindow", u"New", None))
-        self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))
+        self.btn_new.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
+        self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)
