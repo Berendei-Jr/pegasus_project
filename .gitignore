@@ -159,3 +159,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 images/IMG_2026.MP4
+images/IMG_0109.MOV
+test.py

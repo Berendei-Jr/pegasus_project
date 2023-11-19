@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainEYtvPD.ui'
+## Form generated from reading UI file 'mainzocBUG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.0
 ##
@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, QTimer)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTextEdit, QVBoxLayout, QWidget)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog)
 from . resources_rc import *
 
 class Ui_MainWindow(object):
@@ -656,53 +656,63 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setSpacing(0)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
-        self.btn_home = QPushButton(self.topMenu)
-        self.btn_home.setObjectName(u"btn_home")
-        sizePolicy.setHeightForWidth(self.btn_home.sizePolicy().hasHeightForWidth())
-        self.btn_home.setSizePolicy(sizePolicy)
-        self.btn_home.setMinimumSize(QSize(0, 45))
-        self.btn_home.setFont(font)
-        self.btn_home.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_home.setLayoutDirection(Qt.LeftToRight)
-        self.btn_home.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-home.png);")
+        self.pushButtonHome = QPushButton(self.topMenu)
+        self.pushButtonHome.setObjectName(u"pushButtonHome")
+        sizePolicy.setHeightForWidth(self.pushButtonHome.sizePolicy().hasHeightForWidth())
+        self.pushButtonHome.setSizePolicy(sizePolicy)
+        self.pushButtonHome.setMinimumSize(QSize(0, 45))
+        self.pushButtonHome.setFont(font)
+        self.pushButtonHome.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonHome.setLayoutDirection(Qt.LeftToRight)
+        self.pushButtonHome.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-home.png);")
 
-        self.verticalLayout_8.addWidget(self.btn_home)
+        self.verticalLayout_8.addWidget(self.pushButtonHome)
 
-        self.btn_dashboard = QPushButton(self.topMenu)
-        self.btn_dashboard.setObjectName(u"btn_dashboard")
-        sizePolicy.setHeightForWidth(self.btn_dashboard.sizePolicy().hasHeightForWidth())
-        self.btn_dashboard.setSizePolicy(sizePolicy)
-        self.btn_dashboard.setMinimumSize(QSize(0, 45))
-        self.btn_dashboard.setFont(font)
-        self.btn_dashboard.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_dashboard.setLayoutDirection(Qt.LeftToRight)
-        self.btn_dashboard.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-camera.png);")
+        self.pushButtonDashboard = QPushButton(self.topMenu)
+        self.pushButtonDashboard.setObjectName(u"pushButtonDashboard")
+        sizePolicy.setHeightForWidth(self.pushButtonDashboard.sizePolicy().hasHeightForWidth())
+        self.pushButtonDashboard.setSizePolicy(sizePolicy)
+        self.pushButtonDashboard.setMinimumSize(QSize(0, 45))
+        self.pushButtonDashboard.setFont(font)
+        self.pushButtonDashboard.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonDashboard.setLayoutDirection(Qt.LeftToRight)
+        self.pushButtonDashboard.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-camera.png);")
 
-        self.verticalLayout_8.addWidget(self.btn_dashboard)
+        self.verticalLayout_8.addWidget(self.pushButtonDashboard)
 
-        self.btn_settings = QPushButton(self.topMenu)
-        self.btn_settings.setObjectName(u"btn_settings")
-        sizePolicy.setHeightForWidth(self.btn_settings.sizePolicy().hasHeightForWidth())
-        self.btn_settings.setSizePolicy(sizePolicy)
-        self.btn_settings.setMinimumSize(QSize(0, 45))
-        self.btn_settings.setFont(font)
-        self.btn_settings.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_settings.setLayoutDirection(Qt.LeftToRight)
-        self.btn_settings.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-settings.png);")
+        self.pushButtonSettings = QPushButton(self.topMenu)
+        self.pushButtonSettings.setObjectName(u"pushButtonSettings")
+        sizePolicy.setHeightForWidth(self.pushButtonSettings.sizePolicy().hasHeightForWidth())
+        self.pushButtonSettings.setSizePolicy(sizePolicy)
+        self.pushButtonSettings.setMinimumSize(QSize(0, 45))
+        self.pushButtonSettings.setFont(font)
+        self.pushButtonSettings.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonSettings.setLayoutDirection(Qt.LeftToRight)
+        self.pushButtonSettings.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-settings.png);")
 
-        self.verticalLayout_8.addWidget(self.btn_settings)
+        self.verticalLayout_8.addWidget(self.pushButtonSettings)
 
-        self.btn_exit = QPushButton(self.topMenu)
-        self.btn_exit.setObjectName(u"btn_exit")
-        sizePolicy.setHeightForWidth(self.btn_exit.sizePolicy().hasHeightForWidth())
-        self.btn_exit.setSizePolicy(sizePolicy)
-        self.btn_exit.setMinimumSize(QSize(0, 45))
-        self.btn_exit.setFont(font)
-        self.btn_exit.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_exit.setLayoutDirection(Qt.LeftToRight)
-        self.btn_exit.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-x.png);")
+        self.pushButtonTheme = QPushButton(self.topMenu)
+        self.pushButtonTheme.setObjectName(u"pushButtonTheme")
+        sizePolicy.setHeightForWidth(self.pushButtonTheme.sizePolicy().hasHeightForWidth())
+        self.pushButtonTheme.setSizePolicy(sizePolicy)
+        self.pushButtonTheme.setMinimumSize(QSize(0, 45))
+        self.pushButtonTheme.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonTheme.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-moon.png);")
 
-        self.verticalLayout_8.addWidget(self.btn_exit)
+        self.verticalLayout_8.addWidget(self.pushButtonTheme)
+
+        self.pushButtonExit = QPushButton(self.topMenu)
+        self.pushButtonExit.setObjectName(u"pushButtonExit")
+        sizePolicy.setHeightForWidth(self.pushButtonExit.sizePolicy().hasHeightForWidth())
+        self.pushButtonExit.setSizePolicy(sizePolicy)
+        self.pushButtonExit.setMinimumSize(QSize(0, 45))
+        self.pushButtonExit.setFont(font)
+        self.pushButtonExit.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonExit.setLayoutDirection(Qt.LeftToRight)
+        self.pushButtonExit.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-x.png);")
+
+        self.verticalLayout_8.addWidget(self.pushButtonExit)
 
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
@@ -1161,38 +1171,34 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(-1, -1, -1, 0)
-        self.pushButton = QPushButton(self.frame_content_wid_1)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setMinimumSize(QSize(150, 30))
-        self.pushButton.setFont(font)
-        self.pushButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushButton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.pushButtonOpenCFG = QPushButton(self.frame_content_wid_1)
+        self.pushButtonOpenCFG.setObjectName(u"pushButtonOpenCFG")
+        self.pushButtonOpenCFG.setMinimumSize(QSize(150, 30))
+        self.pushButtonOpenCFG.setFont(font)
+        self.pushButtonOpenCFG.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButtonOpenCFG.setStyleSheet(u"background-color: rgb(52, 59, 72);")
         icon3 = QIcon()
         icon3.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pushButton.setIcon(icon3)
+        self.pushButtonOpenCFG.setIcon(icon3)
 
-        self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.pushButtonOpenCFG, 0, 1, 1, 1)
 
-        self.lineEdit = QLineEdit(self.frame_content_wid_1)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setMinimumSize(QSize(0, 30))
-        self.lineEdit.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.lineEditCFG = QLineEdit(self.frame_content_wid_1)
+        self.lineEditCFG.setObjectName(u"lineEditCFG")
+        self.lineEditCFG.setMinimumSize(QSize(0, 30))
+        self.lineEditCFG.setStyleSheet(u"background-color: rgb(33, 37, 43);")
 
-        self.gridLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.lineEditCFG, 0, 0, 1, 1)
 
 
         self.verticalLayout_22.addLayout(self.gridLayout)
 
         self.horizontalLayout_9 = QHBoxLayout()
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.pushButtonLoadConfig = QPushButton(self.frame_content_wid_1)
+        self.pushButtonLoadConfig.setObjectName(u"pushButtonLoadConfig")
 
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_4)
-
-        self.pushButton_3 = QPushButton(self.frame_content_wid_1)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-
-        self.horizontalLayout_9.addWidget(self.pushButton_3)
+        self.horizontalLayout_9.addWidget(self.pushButtonLoadConfig)
 
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -1229,17 +1235,15 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.pushButton_4 = QPushButton(self.row_1)
-        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.pushButtonApply = QPushButton(self.row_1)
+        self.pushButtonApply.setObjectName(u"pushButtonApply")
 
-        self.horizontalLayout_7.addWidget(self.pushButton_4)
+        self.horizontalLayout_7.addWidget(self.pushButtonApply)
 
-        self.pushButtonSaveCFG = QPushButton(self.row_1)
-        self.pushButtonSaveCFG.setObjectName(u"pushButtonSaveCFG")
-        self.pushButtonSaveCFG.setMinimumSize(QSize(70, 20))
-        self.pushButtonSaveCFG.setMaximumSize(QSize(70, 20))
+        self.pushButtonSaveConfig = QPushButton(self.row_1)
+        self.pushButtonSaveConfig.setObjectName(u"pushButtonSaveConfig")
 
-        self.horizontalLayout_7.addWidget(self.pushButtonSaveCFG)
+        self.horizontalLayout_7.addWidget(self.pushButtonSaveConfig)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -1344,10 +1348,11 @@ class Ui_MainWindow(object):
         self.titleLeftDescription.setText(QCoreApplication.translate("MainWindow", u"Server for STM32 based device", None))
         self.logoLabel.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
-        self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
-        self.btn_dashboard.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
-        self.btn_settings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
-        self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
+        self.pushButtonHome.setText(QCoreApplication.translate("MainWindow", u"Home", None))
+        self.pushButtonDashboard.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
+        self.pushButtonSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.pushButtonTheme.setText(QCoreApplication.translate("MainWindow", u"Theme", None))
+        self.pushButtonExit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
@@ -1399,16 +1404,16 @@ class Ui_MainWindow(object):
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:20pt; font-style:italic;\">Welcome to Pegasus Project! Click button below to open the dashboard.</span></p></body></html>", None))
         self.pushButtonOpenCamera.setText(QCoreApplication.translate("MainWindow", u"Open dashboard", None))
         self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Open", None))
-        self.lineEdit.setText("")
-        self.lineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u".cfg file", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
+        self.pushButtonOpenCFG.setText(QCoreApplication.translate("MainWindow", u"Open", None))
+        self.lineEditCFG.setText("")
+        self.lineEditCFG.setPlaceholderText(QCoreApplication.translate("MainWindow", u".cfg file", None))
+        self.pushButtonLoadConfig.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
         self.buttonMotionDetection.setText(QCoreApplication.translate("MainWindow", u"Enable motion detection", None))
         self.buttonFaceID.setText(QCoreApplication.translate("MainWindow", u"Enable FaceID", None))
         self.buttonMetadata.setText(QCoreApplication.translate("MainWindow", u"Enable metadata", None))
         self.buttonTitles.setText(QCoreApplication.translate("MainWindow", u"Enable titles", None))
-        self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
-        self.pushButtonSaveCFG.setText(QCoreApplication.translate("MainWindow", u"Save config", None))
+        self.pushButtonApply.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
+        self.pushButtonSaveConfig.setText(QCoreApplication.translate("MainWindow", u"Save config", None))
         self.videoLabel.setText(QCoreApplication.translate("MainWindow", u"NEW PAGE TEST", None))
         self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"By: Andrey & Supsun", None))
         self.version.setText(QCoreApplication.translate("MainWindow", u"v0.1.0", None))

@@ -1,10 +1,25 @@
+'''
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt, QTimer)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
+    QHBoxLayout, QLabel, QLayout, QLineEdit,
+    QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog)
+from . resources_rc import *
+'''
+
 import sys
 import os
 import logging
 
 from modules import *
 from widgets import *
-from camera_handler.camera_handler import CameraHandler
+from video_utils.camera_handler import CameraHandler
 
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
@@ -29,8 +44,10 @@ class MainWindow(QMainWindow):
         title = "Pegasus"
         description = "Security cameras dashboard"
         logo = QPixmap('./images/images/image.png')
-        logo = logo.scaled(58, 58, Qt.KeepAspectRatio)
-        widgets.logoLabel.setPixmap(logo)
+        self.logo = logo.scaled(58, 58, Qt.KeepAspectRatio)
+        widgets.logoLabel.setPixmap(self.logo)
+
+        self.darkTheme = True
 
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -42,54 +59,45 @@ class MainWindow(QMainWindow):
         # BUTTONS CLICK
         widgets.pushButtonOpenCamera.clicked.connect(self.open_camera_dashboard)
 
-        # LEFT MENUS
-        widgets.btn_dashboard.clicked.connect(self.buttonClick)
-        widgets.btn_home.clicked.connect(self.buttonClick)
-        widgets.btn_settings.clicked.connect(self.buttonClick)
-        widgets.btn_exit.clicked.connect(self.buttonClick)
+        widgets.pushButtonDashboard.clicked.connect(self.buttonClick)
+        widgets.pushButtonHome.clicked.connect(self.buttonClick)
+        widgets.pushButtonSettings.clicked.connect(self.buttonClick)
+        widgets.pushButtonTheme.clicked.connect(self.buttonClick)
+        widgets.pushButtonExit.clicked.connect(self.buttonClick)
+        widgets.pushButtonLoadConfig.clicked.connect(self.buttonClick)
+        widgets.pushButtonSaveConfig.clicked.connect(self.buttonClick)
+        widgets.pushButtonApply.clicked.connect(self.buttonClick)
+        widgets.pushButtonOpenCFG.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
             UIFunctions.toggleLeftBox(self, True)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
-        # SHOW APP
+        # SHOW APPdirectory=os.getcwd()
         self.show()
-
-        # SET CUSTOM THEME
-        useCustomTheme = False
-        themeFile = "themes\py_dracula_light.qss"
-
-        # SET THEME AND HACKS
-        if useCustomTheme:
-            # LOAD AND APPLY STYLE
-            UIFunctions.theme(self, themeFile, True)
-
-            # SET HACKS
-            AppFunctions.setThemeHack(self)
 
         # SET HOME PAGE AND SELECT MENU
         widgets.stackedWidget.setCurrentWidget(widgets.home)
-        widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
-
+        widgets.pushButtonHome.setStyleSheet(UIFunctions.selectMenu(widgets.pushButtonHome.styleSheet()))
 
         self.frame_update_timer = QTimer()
         self.frame_update_timer.timeout.connect(self.update_frame)
-        self.cameraHadler = CameraHandler()
+        self.cameraHandler = CameraHandler()
 
     def open_camera_dashboard(self):
-        widgets.btn_dashboard.click()
+        widgets.pushButtonDashboard.click()
 
     def update_frame(self):
         try:
-            frame = self.cameraHadler.get_frame()
+            frame = self.cameraHandler.get_frame()
         except BufferError as error:
             logging.error(error)
             sys.exit(1)
         height, width, channel = frame.shape
         bytesPerLine = 3 * width
         pixmap = QPixmap.fromImage(QImage(frame.data, width, height, bytesPerLine, QImage.Format_RGB888))
-        pixmap = pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(widgets.videoLabel.width(), widgets.videoLabel.height(), Qt.KeepAspectRatio)
         widgets.videoLabel.setPixmap(pixmap)
 
     # BUTTONS CLICK
@@ -98,28 +106,41 @@ class MainWindow(QMainWindow):
         btn = self.sender()
         btnName = btn.objectName()
 
-        if btnName == "btn_home":
+        if btnName == "pushButtonHome":
             widgets.stackedWidget.setCurrentWidget(widgets.home)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
-        if btnName == "btn_settings":
+        if btnName == "pushButtonSettings":
             widgets.stackedWidget.setCurrentWidget(widgets.settings)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
-        if btnName == "btn_dashboard":
+        if btnName == "pushButtonDashboard":
             widgets.stackedWidget.setCurrentWidget(widgets.video_page) # SET PAGE
             self.frame_update_timer.start(40)
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
-        if btnName == "pushButton_4":
-            widgets.stackedWidget.setCurrentWidget(widgets.home)
+        if btnName == "pushButtonTheme":
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            newTheme = 'themes/py_dracula_light.qss' if self.darkTheme else 'themes/py_dracula_dark.qss'
+            self.darkTheme = not self.darkTheme
+            UIFunctions.theme(self, newTheme, True)
+            AppFunctions.setThemeHack(self)
 
-        if btnName == "btn_exit":
+        if btnName == "pushButtonApply":
+            self.cameraHandler.set_options(motion_detection=widgets.buttonMotionDetection.isChecked(),
+                                          face_id=widgets.buttonFaceID.isChecked(),
+                                          metadata=widgets.buttonMetadata.isChecked(),
+                                          subtitles=widgets.buttonTitles.isChecked())
+
+        if btnName == "pushButtonOpenCFG":
+            resp = QFileDialog.getOpenFileName(self, caption='Select config file')
+            print(str(resp[0]))
+
+        if btnName == "pushButtonExit":
             sys.exit(0)
 
         # PRINT BTN NAME
