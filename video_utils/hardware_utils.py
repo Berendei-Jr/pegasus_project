@@ -1,6 +1,8 @@
-import cv2
-from datetime import datetime
 import os
+import logging
+from datetime import datetime
+
+import cv2
 
 def write_frames_to_disk(prerecord_frames: list, record_frames: list,
                          postrecord_frames: list, framerate = int):
@@ -17,7 +19,8 @@ def write_frames_to_disk(prerecord_frames: list, record_frames: list,
 
     height, width, layers = full_video_frames[0].shape
     size = (width,height)
-    out = cv2.VideoWriter(f'{dir_name}/demo.avi',cv2.VideoWriter_fourcc(*'DIVX'), framerate, size)
+    video_name = f'{dir_name}/video.avi'
+    out = cv2.VideoWriter(video_name,cv2.VideoWriter_fourcc(*'DIVX'), framerate, size)
 
     for frame in full_video_frames:
         out.write(frame)
@@ -27,3 +30,4 @@ def write_frames_to_disk(prerecord_frames: list, record_frames: list,
     for frame in full_video_frames:
         cv2.imwrite('{}_{}.{}'.format(f'{dir_name}/frame', str(i), 'jpg'), frame)
         i += 1
+    logging.info(f'{video_name} saved to disk')

@@ -1,10 +1,15 @@
-import cv2
+import os
 import time
+import json
+import logging
+
+import cv2
 from video_utils.hardware_utils import write_frames_to_disk
 
-FRAMERATE = 10
-PRERECORD_TIME = 3
-POSTRECORD_TIME = 3
+DEFAULT_FRAMERATE = 10
+DEFAULT_PRERECORD_TIME = 3
+DEFAULT_POSTRECORD_TIME = 3
+DEFAULT_CONFIG_NAME = 'config.json'
 
 PRERECORD_STATE = -1
 MOTION_STATE = 0
@@ -12,17 +17,23 @@ POSTRECORD_STATE = 1
 
 class CameraHandler:
     def __init__(self) -> None:
-        self.cap = cv2.VideoCapture("/home/hellcat/Downloads/111.mp4")
-        #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
-        self.load_config()
-        self.enable_motion_detection = True
-        self.enable_face_id = False
-        self.enable_metadata = False
-        self.enable_subtitles = False
+        #self.cap = cv2.VideoCapture("/home/hellcat/Downloads/111.mp4")
+        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        self.options = {
+            'framerate': DEFAULT_FRAMERATE,
+            'motion_detection': False,
+            'face_id': False,
+            'subtitles': False,
+            'metadata': False,
+            'prerecord_time': DEFAULT_PRERECORD_TIME,
+            'postrecord_time': DEFAULT_POSTRECORD_TIME,
+            'blind_areas': []
+        }
+        self.load_config(DEFAULT_CONFIG_NAME)
         self.last_frame_update_time = time.time()
-        self.frame_time = 1/FRAMERATE
-        self.prerecord_frames_number = PRERECORD_TIME//self.frame_time
-        self.postrecord_frames_number = POSTRECORD_TIME//self.frame_time
+        self.frame_time = 1/self.options['framerate']
+        self.prerecord_frames_number = self.options['prerecord_time']//self.frame_time
+        self.postrecord_frames_number = self.options['postrecord_time']//self.frame_time
         self.prerecord_frames = []
         self.motion_frames = []
         self.postrecord_frames = []
@@ -35,20 +46,34 @@ class CameraHandler:
 
         self.current_show_frame = self.current_frame
         self.prerecord_frames.append(self.current_show_frame)
+        logging.info('Camera handler initialized')
 
     def __del__(self):
         self.cap.release()
         cv2.destroyAllWindows()
 
-    def load_config(self):
-        pass
+    def load_config(self, config_path: str) -> bool:
+        if not config_path or not os.path.exists(config_path):
+            return False
 
-    def set_options(self, motion_detection = False, face_id = False,
-                    metadata = False, subtitles = False) -> bool:
-        self.enable_motion_detection = motion_detection
-        self.enable_face_id = face_id
-        self.enable_metadata = metadata
-        self.enable_subtitles = subtitles
+        logging.warning(f'Loading config {config_path}')
+        options = dict()
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                options = json.load(f)
+            self.set_options(options)
+        except json.decoder.JSONDecodeError:
+            return False
+        return True
+
+    def set_options(self, options: dict, update = False):
+        if update:
+            options['blind_areas'] = self.options['blind_areas']
+
+        self.options |= options
+    
+    def get_options(self) -> dict:
+        return self.options
 
     def get_frame(self):
         if not self.cap.isOpened():
@@ -63,13 +88,15 @@ class CameraHandler:
         if not ret:
             raise BufferError('Unable to read frame')
 
-        if self.enable_motion_detection:
+        if self.options['motion_detection']:
             frame_for_show, self.motion_detected,  = self.__motion_detection(new_frame)
+            if self.motion_detected:
+                logging.info(f'Motion detected')
         else:
             frame_for_show = new_frame
-    
-        if self.enable_motion_detection:
-            print(f'PRE: {len(self.prerecord_frames)}\nMOT: {len(self.motion_frames)}\nPOST: {len(self.postrecord_frames)}\n')
+
+        if self.options['motion_detection']:
+            #logging.info(f'PRE: {len(self.prerecord_frames)}\nMOT: {len(self.motion_frames)}\nPOST: {len(self.postrecord_frames)}\n')
             if self.motion_detected:
                 if self.record_state == PRERECORD_STATE:
                     self.record_state = MOTION_STATE
@@ -94,7 +121,7 @@ class CameraHandler:
                         write_frames_to_disk(prerecord_frames = self.prerecord_frames,
                                              record_frames=  self.motion_frames,
                                              postrecord_frames = self.postrecord_frames,
-                                             framerate = FRAMERATE)
+                                             framerate = self.options['framerate'])
                         self.prerecord_frames.clear()
                         self.motion_frames.clear()
                         self.postrecord_frames.clear()
@@ -116,7 +143,7 @@ class CameraHandler:
         сontours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) # нахождение массива контурных точек
 
         motion_detected = False
-        if len(сontours) < 8:
+        if len(сontours) < 1000:
             for contour in сontours:
                 (x, y, w, h) = cv2.boundingRect(contour) # преобразование массива из предыдущего этапа в кортеж из четырех координат
 

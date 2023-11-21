@@ -16,6 +16,7 @@ from . resources_rc import *
 import sys
 import os
 import logging
+import json
 
 from modules import *
 from widgets import *
@@ -84,11 +85,12 @@ class MainWindow(QMainWindow):
         self.frame_update_timer = QTimer()
         self.frame_update_timer.timeout.connect(self.update_frame)
         self.cameraHandler = CameraHandler()
+        self.set_settings_window()
 
-    def open_camera_dashboard(self):
+    def open_camera_dashboard(self) -> None:
         widgets.pushButtonDashboard.click()
 
-    def update_frame(self):
+    def update_frame(self) -> None:
         try:
             frame = self.cameraHandler.get_frame()
         except BufferError as error:
@@ -99,6 +101,16 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap.fromImage(QImage(frame.data, width, height, bytesPerLine, QImage.Format_RGB888))
         pixmap = pixmap.scaled(widgets.videoLabel.width(), widgets.videoLabel.height(), Qt.KeepAspectRatio)
         widgets.videoLabel.setPixmap(pixmap)
+
+    def set_settings_window(self) -> None:
+        new_options = self.cameraHandler.get_options()
+        widgets.buttonMotionDetection.setChecked(bool(new_options['motion_detection']))
+        if new_options['face_id']:
+            widgets.buttonFaceID.setChecked(True)
+        if new_options['metadata']:
+            widgets.buttonMetadata.setChecked(True)
+        if new_options['subtitles']:
+            widgets.buttonTitles.setChecked(True)
 
     # BUTTONS CLICK
     def buttonClick(self):
@@ -111,18 +123,18 @@ class MainWindow(QMainWindow):
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
-        if btnName == "pushButtonSettings":
+        elif btnName == "pushButtonSettings":
             widgets.stackedWidget.setCurrentWidget(widgets.settings)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
-        if btnName == "pushButtonDashboard":
+        elif btnName == "pushButtonDashboard":
             widgets.stackedWidget.setCurrentWidget(widgets.video_page) # SET PAGE
             self.frame_update_timer.start(40)
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
-        if btnName == "pushButtonTheme":
+        elif btnName == "pushButtonTheme":
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
             newTheme = 'themes/py_dracula_light.qss' if self.darkTheme else 'themes/py_dracula_dark.qss'
@@ -130,22 +142,42 @@ class MainWindow(QMainWindow):
             UIFunctions.theme(self, newTheme, True)
             AppFunctions.setThemeHack(self)
 
-        if btnName == "pushButtonApply":
-            self.cameraHandler.set_options(motion_detection=widgets.buttonMotionDetection.isChecked(),
-                                          face_id=widgets.buttonFaceID.isChecked(),
-                                          metadata=widgets.buttonMetadata.isChecked(),
-                                          subtitles=widgets.buttonTitles.isChecked())
+        elif btnName == "pushButtonApply":
+            self.cameraHandler.set_options({
+                'motion_detection': widgets.buttonMotionDetection.isChecked(),
+                'face_id': widgets.buttonFaceID.isChecked(),
+                'metadata': widgets.buttonMetadata.isChecked(),
+                'subtitles': widgets.buttonTitles.isChecked()
+            }, update=True)
 
-        if btnName == "pushButtonOpenCFG":
-            resp = QFileDialog.getOpenFileName(self, caption='Select config file')
-            print(str(resp[0]))
+        elif btnName == "pushButtonOpenCFG":
+            config_file = str(QFileDialog.getOpenFileName(self,
+                                               caption='Select config file',
+                                               dir = os.getcwd(),
+                                               filter='*.json')[0])
+            if not config_file:
+                return
+
+            widgets.lineEditCFG.setText(config_file)
+
+        elif btnName == "pushButtonLoadConfig":
+            config_path = widgets.lineEditCFG.text()
+            if not self.cameraHandler.load_config(config_path):
+                QMessageBox.warning(self, 'Note', 'Invalid config path')
+                return
+            self.set_settings_window()
+
+        elif btnName == "pushButtonSaveConfig":
+            widgets.pushButtonApply.click()
+            options = self.cameraHandler.get_options()
+            config_name = f'{os.getcwd()}/config.json'
+            with open(config_name, 'w', encoding='utf-8') as f:
+                json.dump(options, f, ensure_ascii=False, indent=4)
+
+            logging.info(f'Saved config {config_name}')
 
         if btnName == "pushButtonExit":
             sys.exit(0)
-
-        # PRINT BTN NAME
-        print(f'Button "{btnName}" pressed!')
-
 
     # RESIZE EVENTS
     def resizeEvent(self, event):
@@ -154,16 +186,20 @@ class MainWindow(QMainWindow):
 
     # MOUSE CLICK EVENTS
     def mousePressEvent(self, event):
+        pass
         # SET DRAG POS WINDOW
-        self.dragPos = event.globalPos()
+       # self.dragPos = event.globalPos()
 
         # PRINT MOUSE EVENTS
-        if event.buttons() == Qt.LeftButton:
-            print('Mouse click: LEFT CLICK')
-        if event.buttons() == Qt.RightButton:
-            print('Mouse click: RIGHT CLICK')
+        #if event.buttons() == Qt.LeftButton:
+        #    print('Mouse click: LEFT CLICK')
+        #if event.buttons() == Qt.RightButton:
+        #    print('Mouse click: RIGHT CLICK')
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(message)s')
+
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
