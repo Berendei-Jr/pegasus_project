@@ -9,7 +9,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
 from . resources_rc import *
 '''
 
@@ -69,6 +69,10 @@ class MainWindow(QMainWindow):
         widgets.pushButtonSaveConfig.clicked.connect(self.buttonClick)
         widgets.pushButtonApply.clicked.connect(self.buttonClick)
         widgets.pushButtonOpenCFG.clicked.connect(self.buttonClick)
+
+        widgets.horizontalSliderFramerate.valueChanged.connect(self.sliderFramerateUpdate)
+        widgets.horizontalSliderPrerecord.valueChanged.connect(self.sliderPrerecordUpdate)
+        widgets.horizontalSliderPostrecord.valueChanged.connect(self.sliderPostrecordUpdate)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
@@ -140,7 +144,7 @@ class MainWindow(QMainWindow):
             newTheme = 'themes/py_dracula_light.qss' if self.darkTheme else 'themes/py_dracula_dark.qss'
             self.darkTheme = not self.darkTheme
             UIFunctions.theme(self, newTheme, True)
-            AppFunctions.setThemeHack(self)
+            #AppFunctions.setThemeHack(self)
 
         elif btnName == "pushButtonApply":
             self.cameraHandler.set_options({
@@ -178,6 +182,15 @@ class MainWindow(QMainWindow):
 
         if btnName == "pushButtonExit":
             sys.exit(0)
+
+    def sliderFramerateUpdate(self, value):
+        widgets.labelFramerate.setText(f'Framerate: {value} fps')
+    
+    def sliderPrerecordUpdate(self, value):
+        widgets.labelPrerecord.setText(f'Prerecord time: {value}s')
+
+    def sliderPostrecordUpdate(self, value):
+        widgets.labelPostrecord.setText(f'Postrecord time: {value}s')
 
     # RESIZE EVENTS
     def resizeEvent(self, event):

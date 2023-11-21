@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainzocBUG.ui'
+## Form generated from reading UI file 'mainwweiLr.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.0
 ##
@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
 from . resources_rc import *
 
 class Ui_MainWindow(object):
@@ -27,6 +27,9 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1280, 720)
         MainWindow.setMinimumSize(QSize(940, 560))
+        icon = QIcon()
+        icon.addFile(u"images/images/Security Camera Png - Cctv Camera Icon Png ,  Free Transparent Clipart - ClipartKey.jpeg", QSize(), QIcon.Normal, QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
         font = QFont()
@@ -590,7 +593,7 @@ class Ui_MainWindow(object):
         font1 = QFont()
         font1.setFamilies([u"Segoe UI Semibold"])
         font1.setPointSize(12)
-        #font1.setWeight(QFont.)
+      #  font1.setWeight(QFont.)
         font1.setItalic(False)
         self.titleLeftApp.setFont(font1)
         self.titleLeftApp.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
@@ -679,6 +682,13 @@ class Ui_MainWindow(object):
         self.pushButtonDashboard.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-camera.png);")
 
         self.verticalLayout_8.addWidget(self.pushButtonDashboard)
+
+        self.pushButtonVideoViewer = QPushButton(self.topMenu)
+        self.pushButtonVideoViewer.setObjectName(u"pushButtonVideoViewer")
+        self.pushButtonVideoViewer.setMinimumSize(QSize(0, 45))
+        self.pushButtonVideoViewer.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-movie.png);")
+
+        self.verticalLayout_8.addWidget(self.pushButtonVideoViewer)
 
         self.pushButtonSettings = QPushButton(self.topMenu)
         self.pushButtonSettings.setObjectName(u"pushButtonSettings")
@@ -779,9 +789,9 @@ class Ui_MainWindow(object):
         self.extraCloseColumnBtn.setMinimumSize(QSize(28, 28))
         self.extraCloseColumnBtn.setMaximumSize(QSize(28, 28))
         self.extraCloseColumnBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon = QIcon()
-        icon.addFile(u":/icons/images/icons/icon_close.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.extraCloseColumnBtn.setIcon(icon)
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/icons/icon_close.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.extraCloseColumnBtn.setIcon(icon1)
         self.extraCloseColumnBtn.setIconSize(QSize(20, 20))
 
         self.extraTopLayout.addWidget(self.extraCloseColumnBtn, 0, 2, 1, 1)
@@ -939,9 +949,9 @@ class Ui_MainWindow(object):
         self.minimizeAppBtn.setMinimumSize(QSize(28, 28))
         self.minimizeAppBtn.setMaximumSize(QSize(28, 28))
         self.minimizeAppBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/images/icons/icon_minimize.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.minimizeAppBtn.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/images/icons/icon_minimize.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.minimizeAppBtn.setIcon(icon2)
         self.minimizeAppBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.minimizeAppBtn)
@@ -958,9 +968,9 @@ class Ui_MainWindow(object):
         font3.setStyleStrategy(QFont.PreferDefault)
         self.maximizeRestoreAppBtn.setFont(font3)
         self.maximizeRestoreAppBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon2 = QIcon()
-        icon2.addFile(u":/icons/images/icons/icon_maximize.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.maximizeRestoreAppBtn.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/images/icons/icon_maximize.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.maximizeRestoreAppBtn.setIcon(icon3)
         self.maximizeRestoreAppBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.maximizeRestoreAppBtn)
@@ -970,7 +980,7 @@ class Ui_MainWindow(object):
         self.closeAppBtn.setMinimumSize(QSize(28, 28))
         self.closeAppBtn.setMaximumSize(QSize(28, 28))
         self.closeAppBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        self.closeAppBtn.setIcon(icon)
+        self.closeAppBtn.setIcon(icon1)
         self.closeAppBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.closeAppBtn)
@@ -1164,6 +1174,7 @@ class Ui_MainWindow(object):
 
         self.frame_content_wid_1 = QFrame(self.frame_div_content_1)
         self.frame_content_wid_1.setObjectName(u"frame_content_wid_1")
+        self.frame_content_wid_1.setMinimumSize(QSize(0, 80))
         self.frame_content_wid_1.setFrameShape(QFrame.NoFrame)
         self.frame_content_wid_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_22 = QVBoxLayout(self.frame_content_wid_1)
@@ -1177,9 +1188,9 @@ class Ui_MainWindow(object):
         self.pushButtonOpenCFG.setFont(font)
         self.pushButtonOpenCFG.setCursor(QCursor(Qt.PointingHandCursor))
         self.pushButtonOpenCFG.setStyleSheet(u"background-color: rgb(52, 59, 72);")
-        icon3 = QIcon()
-        icon3.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pushButtonOpenCFG.setIcon(icon3)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButtonOpenCFG.setIcon(icon4)
 
         self.gridLayout.addWidget(self.pushButtonOpenCFG, 0, 1, 1, 1)
 
@@ -1197,6 +1208,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.pushButtonLoadConfig = QPushButton(self.frame_content_wid_1)
         self.pushButtonLoadConfig.setObjectName(u"pushButtonLoadConfig")
+        self.pushButtonLoadConfig.setMinimumSize(QSize(150, 20))
 
         self.horizontalLayout_9.addWidget(self.pushButtonLoadConfig)
 
@@ -1233,28 +1245,123 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_16.addWidget(self.buttonTitles)
 
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_6)
+
+        self.verticalLayout_24 = QVBoxLayout()
+        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
+        self.labelFramerate = QLabel(self.row_1)
+        self.labelFramerate.setObjectName(u"labelFramerate")
+        self.labelFramerate.setMinimumSize(QSize(250, 0))
+        self.labelFramerate.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_24.addWidget(self.labelFramerate)
+
+        self.horizontalSliderFramerate = QSlider(self.row_1)
+        self.horizontalSliderFramerate.setObjectName(u"horizontalSliderFramerate")
+        self.horizontalSliderFramerate.setMinimumSize(QSize(0, 30))
+        self.horizontalSliderFramerate.setMinimum(1)
+        self.horizontalSliderFramerate.setMaximum(30)
+        self.horizontalSliderFramerate.setPageStep(5)
+        self.horizontalSliderFramerate.setOrientation(Qt.Horizontal)
+        self.horizontalSliderFramerate.setInvertedAppearance(False)
+        self.horizontalSliderFramerate.setInvertedControls(False)
+        self.horizontalSliderFramerate.setTickPosition(QSlider.TicksBelow)
+        self.horizontalSliderFramerate.setTickInterval(5)
+
+        self.verticalLayout_24.addWidget(self.horizontalSliderFramerate)
+
+
+        self.horizontalLayout_8.addLayout(self.verticalLayout_24)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_2)
+
+        self.verticalLayout_23 = QVBoxLayout()
+        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
+        self.labelPrerecord = QLabel(self.row_1)
+        self.labelPrerecord.setObjectName(u"labelPrerecord")
+        self.labelPrerecord.setMinimumSize(QSize(250, 0))
+        self.labelPrerecord.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_23.addWidget(self.labelPrerecord)
+
+        self.horizontalSliderPrerecord = QSlider(self.row_1)
+        self.horizontalSliderPrerecord.setObjectName(u"horizontalSliderPrerecord")
+        self.horizontalSliderPrerecord.setMinimumSize(QSize(0, 30))
+        self.horizontalSliderPrerecord.setMaximum(5)
+        self.horizontalSliderPrerecord.setPageStep(1)
+        self.horizontalSliderPrerecord.setOrientation(Qt.Horizontal)
+        self.horizontalSliderPrerecord.setTickPosition(QSlider.TicksBelow)
+        self.horizontalSliderPrerecord.setTickInterval(1)
+
+        self.verticalLayout_23.addWidget(self.horizontalSliderPrerecord)
+
+
+        self.horizontalLayout_8.addLayout(self.verticalLayout_23)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_4)
+
+        self.verticalLayout_19 = QVBoxLayout()
+        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.labelPostrecord = QLabel(self.row_1)
+        self.labelPostrecord.setObjectName(u"labelPostrecord")
+        self.labelPostrecord.setMinimumSize(QSize(250, 0))
+        self.labelPostrecord.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_19.addWidget(self.labelPostrecord)
+
+        self.horizontalSliderPostrecord = QSlider(self.row_1)
+        self.horizontalSliderPostrecord.setObjectName(u"horizontalSliderPostrecord")
+        self.horizontalSliderPostrecord.setMinimumSize(QSize(0, 30))
+        self.horizontalSliderPostrecord.setMaximum(5)
+        self.horizontalSliderPostrecord.setPageStep(1)
+        self.horizontalSliderPostrecord.setOrientation(Qt.Horizontal)
+        self.horizontalSliderPostrecord.setTickPosition(QSlider.TicksBelow)
+        self.horizontalSliderPostrecord.setTickInterval(1)
+
+        self.verticalLayout_19.addWidget(self.horizontalSliderPostrecord)
+
+
+        self.horizontalLayout_8.addLayout(self.verticalLayout_19)
+
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_7)
+
+
+        self.verticalLayout_16.addLayout(self.horizontalLayout_8)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_16.addItem(self.verticalSpacer)
+
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer)
+
         self.pushButtonApply = QPushButton(self.row_1)
         self.pushButtonApply.setObjectName(u"pushButtonApply")
+        self.pushButtonApply.setMinimumSize(QSize(100, 25))
 
         self.horizontalLayout_7.addWidget(self.pushButtonApply)
 
         self.pushButtonSaveConfig = QPushButton(self.row_1)
         self.pushButtonSaveConfig.setObjectName(u"pushButtonSaveConfig")
+        self.pushButtonSaveConfig.setMinimumSize(QSize(100, 25))
 
         self.horizontalLayout_7.addWidget(self.pushButtonSaveConfig)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_7.addItem(self.horizontalSpacer)
-
 
         self.verticalLayout_16.addLayout(self.horizontalLayout_7)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_16.addItem(self.verticalSpacer)
 
 
         self.verticalLayout.addWidget(self.row_1)
@@ -1266,9 +1373,31 @@ class Ui_MainWindow(object):
         self.verticalLayout_20.setObjectName(u"verticalLayout_20")
         self.videoLabel = QLabel(self.video_page)
         self.videoLabel.setObjectName(u"videoLabel")
+        self.videoLabel.setMinimumSize(QSize(0, 560))
         self.videoLabel.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_20.addWidget(self.videoLabel)
+
+        self.horizontalLayout_10 = QHBoxLayout()
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_10.addItem(self.horizontalSpacer_5)
+
+        self.pushButtonConfirmBlindZones = QPushButton(self.video_page)
+        self.pushButtonConfirmBlindZones.setObjectName(u"pushButtonConfirmBlindZones")
+        self.pushButtonConfirmBlindZones.setMinimumSize(QSize(200, 25))
+
+        self.horizontalLayout_10.addWidget(self.pushButtonConfirmBlindZones)
+
+        self.pushButtonResetBlindZones = QPushButton(self.video_page)
+        self.pushButtonResetBlindZones.setObjectName(u"pushButtonResetBlindZones")
+        self.pushButtonResetBlindZones.setMinimumSize(QSize(200, 25))
+
+        self.horizontalLayout_10.addWidget(self.pushButtonResetBlindZones)
+
+
+        self.verticalLayout_20.addLayout(self.horizontalLayout_10)
 
         self.stackedWidget.addWidget(self.video_page)
         self.page = QWidget()
@@ -1350,6 +1479,7 @@ class Ui_MainWindow(object):
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
         self.pushButtonHome.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.pushButtonDashboard.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
+        self.pushButtonVideoViewer.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
         self.pushButtonSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.pushButtonTheme.setText(QCoreApplication.translate("MainWindow", u"Theme", None))
         self.pushButtonExit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
@@ -1406,15 +1536,20 @@ class Ui_MainWindow(object):
         self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.pushButtonOpenCFG.setText(QCoreApplication.translate("MainWindow", u"Open", None))
         self.lineEditCFG.setText("")
-        self.lineEditCFG.setPlaceholderText(QCoreApplication.translate("MainWindow", u".cfg file", None))
+        self.lineEditCFG.setPlaceholderText(QCoreApplication.translate("MainWindow", u".json file", None))
         self.pushButtonLoadConfig.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
         self.buttonMotionDetection.setText(QCoreApplication.translate("MainWindow", u"Enable motion detection", None))
         self.buttonFaceID.setText(QCoreApplication.translate("MainWindow", u"Enable FaceID", None))
         self.buttonMetadata.setText(QCoreApplication.translate("MainWindow", u"Enable metadata", None))
         self.buttonTitles.setText(QCoreApplication.translate("MainWindow", u"Enable titles", None))
+        self.labelFramerate.setText(QCoreApplication.translate("MainWindow", u"Framerate: 1 fps", None))
+        self.labelPrerecord.setText(QCoreApplication.translate("MainWindow", u"Prerecord time: 0s", None))
+        self.labelPostrecord.setText(QCoreApplication.translate("MainWindow", u"Postrecord time: 0s", None))
         self.pushButtonApply.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
         self.pushButtonSaveConfig.setText(QCoreApplication.translate("MainWindow", u"Save config", None))
-        self.videoLabel.setText(QCoreApplication.translate("MainWindow", u"NEW PAGE TEST", None))
+        self.videoLabel.setText(QCoreApplication.translate("MainWindow", u"Video", None))
+        self.pushButtonConfirmBlindZones.setText(QCoreApplication.translate("MainWindow", u"Confirm blind zones", None))
+        self.pushButtonResetBlindZones.setText(QCoreApplication.translate("MainWindow", u"Reset blind zones", None))
         self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"By: Andrey & Supsun", None))
         self.version.setText(QCoreApplication.translate("MainWindow", u"v0.1.0", None))
     # retranslateUi

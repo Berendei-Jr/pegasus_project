@@ -20,6 +20,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>images/images/Security Camera Png - Cctv Camera Icon Png ,  Free Transparent Clipart - ClipartKey.jpeg</normaloff>images/images/Security Camera Png - Cctv Camera Icon Png ,  Free Transparent Clipart - ClipartKey.jpeg</iconset>
+  </property>
   <widget class="QWidget" name="styleSheet">
    <property name="font">
     <font>
@@ -897,6 +901,22 @@ Button */
                   </property>
                   <property name="text">
                    <string>Dashboard</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonVideoViewer">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>45</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-movie.png);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
                   </property>
                  </widget>
                 </item>
@@ -2153,6 +2173,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
                              </item>
                              <item>
                               <widget class="QFrame" name="frame_content_wid_1">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>80</height>
+                                </size>
+                               </property>
                                <property name="frameShape">
                                 <enum>QFrame::NoFrame</enum>
                                </property>
@@ -2211,7 +2237,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                      <string/>
                                     </property>
                                     <property name="placeholderText">
-                                     <string>.cfg file</string>
+                                     <string>.json file</string>
                                     </property>
                                    </widget>
                                   </item>
@@ -2221,6 +2247,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <layout class="QHBoxLayout" name="horizontalLayout_9">
                                   <item>
                                    <widget class="QPushButton" name="pushButtonLoadConfig">
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>150</width>
+                                      <height>20</height>
+                                     </size>
+                                    </property>
                                     <property name="text">
                                      <string>Load config</string>
                                     </property>
@@ -2276,23 +2308,192 @@ li.checked::marker { content: &quot;\2612&quot;; }
                            </widget>
                           </item>
                           <item>
-                           <layout class="QHBoxLayout" name="horizontalLayout_7">
+                           <layout class="QHBoxLayout" name="horizontalLayout_8">
                             <item>
-                             <widget class="QPushButton" name="pushButtonApply">
-                              <property name="text">
-                               <string>Apply</string>
+                             <spacer name="horizontalSpacer_6">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
                               </property>
-                             </widget>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
                             </item>
                             <item>
-                             <widget class="QPushButton" name="pushButtonSaveConfig">
-                              <property name="text">
-                               <string>Save config</string>
-                              </property>
-                             </widget>
+                             <layout class="QVBoxLayout" name="verticalLayout_24">
+                              <item>
+                               <widget class="QLabel" name="labelFramerate">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>250</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>Framerate: 1 fps</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="horizontalSliderFramerate">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                 </size>
+                                </property>
+                                <property name="minimum">
+                                 <number>1</number>
+                                </property>
+                                <property name="maximum">
+                                 <number>30</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="invertedAppearance">
+                                 <bool>false</bool>
+                                </property>
+                                <property name="invertedControls">
+                                 <bool>false</bool>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>5</number>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer">
+                             <spacer name="horizontalSpacer_2">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <layout class="QVBoxLayout" name="verticalLayout_23">
+                              <item>
+                               <widget class="QLabel" name="labelPrerecord">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>250</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>Prerecord time: 0s</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="horizontalSliderPrerecord">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>1</number>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <spacer name="horizontalSpacer_4">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <layout class="QVBoxLayout" name="verticalLayout_19">
+                              <item>
+                               <widget class="QLabel" name="labelPostrecord">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>250</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>Postrecord time: 0s</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QSlider" name="horizontalSliderPostrecord">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>1</number>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <spacer name="horizontalSpacer_7">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
                               </property>
@@ -2319,6 +2520,49 @@ li.checked::marker { content: &quot;\2612&quot;; }
                             </property>
                            </spacer>
                           </item>
+                          <item>
+                           <layout class="QHBoxLayout" name="horizontalLayout_7">
+                            <item>
+                             <spacer name="horizontalSpacer">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="pushButtonApply">
+                              <property name="minimumSize">
+                               <size>
+                                <width>100</width>
+                                <height>25</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Apply</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="pushButtonSaveConfig">
+                              <property name="minimumSize">
+                               <size>
+                                <width>100</width>
+                                <height>25</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Save config</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
                          </layout>
                         </widget>
                        </item>
@@ -2328,13 +2572,62 @@ li.checked::marker { content: &quot;\2612&quot;; }
                       <layout class="QVBoxLayout" name="verticalLayout_20">
                        <item>
                         <widget class="QLabel" name="videoLabel">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>560</height>
+                          </size>
+                         </property>
                          <property name="text">
-                          <string>NEW PAGE TEST</string>
+                          <string>Video</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_10">
+                         <item>
+                          <spacer name="horizontalSpacer_5">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButtonConfirmBlindZones">
+                           <property name="minimumSize">
+                            <size>
+                             <width>200</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>Confirm blind zones</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButtonResetBlindZones">
+                           <property name="minimumSize">
+                            <size>
+                             <width>200</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>Reset blind zones</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
                        </item>
                       </layout>
                      </widget>

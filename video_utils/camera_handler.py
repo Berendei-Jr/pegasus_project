@@ -9,7 +9,7 @@ from video_utils.hardware_utils import write_frames_to_disk
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
 DEFAULT_POSTRECORD_TIME = 3
-DEFAULT_CONFIG_NAME = 'config.json'
+DEFAULT_CONFIG_NAME = f'{os.getcwd()}/config.json'
 
 PRERECORD_STATE = -1
 MOTION_STATE = 0
@@ -17,8 +17,8 @@ POSTRECORD_STATE = 1
 
 class CameraHandler:
     def __init__(self) -> None:
-        #self.cap = cv2.VideoCapture("/home/hellcat/Downloads/111.mp4")
-        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        self.cap = cv2.VideoCapture("/home/hellcat/workspace/pegasus_project/images/IMG_0109.MOV")
+        #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
             'motion_detection': False,
@@ -56,7 +56,7 @@ class CameraHandler:
         if not config_path or not os.path.exists(config_path):
             return False
 
-        logging.warning(f'Loading config {config_path}')
+        logging.info(f'Loading config {config_path}')
         options = dict()
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
@@ -71,7 +71,7 @@ class CameraHandler:
             options['blind_areas'] = self.options['blind_areas']
 
         self.options |= options
-    
+
     def get_options(self) -> dict:
         return self.options
 

@@ -1,9 +1,9 @@
 {
     "framerate": 10,
     "motion_detection": true,
-    "face_id": true,
+    "face_id": false,
     "subtitles": false,
-    "metadata": true,
+    "metadata": false,
     "prerecord_time": 3,
     "postrecord_time": 3,
     "blind_areas": []
