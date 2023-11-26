@@ -1,8 +1,7 @@
 <RCC>
   <qresource prefix="images">
-    <file>images/images/5c8a25b5cdad6d02b006e485.png</file>
-    <file>images/images/PyDracula.png</file>
-    <file>images/images/PyDracula_vertical.png</file>
+    <file>images/images/PIXNIO-2902157-1344x753.png</file>
+
   </qresource>
   <qresource prefix="icons">
     <file>images/icons/cil-3d.png</file>

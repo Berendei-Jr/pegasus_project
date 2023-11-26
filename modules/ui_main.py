@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwweiLr.ui'
+## Form generated from reading UI file 'mainRvBmfT.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.0
 ##
@@ -20,15 +20,16 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
     QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
 from . resources_rc import *
+from . resources import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1280, 720)
+        MainWindow.resize(1444, 902)
         MainWindow.setMinimumSize(QSize(940, 560))
         icon = QIcon()
-        icon.addFile(u"images/images/Security Camera Png - Cctv Camera Icon Png ,  Free Transparent Clipart - ClipartKey.jpeg", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../../.designer/backup/images/images/Security Camera Png - Cctv Camera Icon Png ,  Free Transparent Clipart - ClipartKey.jpeg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
@@ -593,7 +594,7 @@ class Ui_MainWindow(object):
         font1 = QFont()
         font1.setFamilies([u"Segoe UI Semibold"])
         font1.setPointSize(12)
-      #  font1.setWeight(QFont.)
+     #   font1.setWeight(QFont.)
         font1.setItalic(False)
         self.titleLeftApp.setFont(font1)
         self.titleLeftApp.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
@@ -1106,29 +1107,62 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.home.sizePolicy().hasHeightForWidth())
         self.home.setSizePolicy(sizePolicy3)
-        self.home.setStyleSheet(u"")
-        self.layoutWidget = QWidget(self.home)
-        self.layoutWidget.setObjectName(u"layoutWidget")
-        self.layoutWidget.setGeometry(QRect(10, 360, 421, 223))
-        self.verticalLayout_21 = QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
-        self.verticalLayout_21.setContentsMargins(0, 0, 0, 0)
-        self.textEdit_2 = QTextEdit(self.layoutWidget)
+        self.home.setStyleSheet(u"background-image: url(:/images/images/images/PIXNIO-2902157-1344x753.png);\n"
+"background-position: center;\n"
+"background-repeat: no-repeat;")
+        self.verticalLayout_25 = QVBoxLayout(self.home)
+        self.verticalLayout_25.setObjectName(u"verticalLayout_25")
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_25.addItem(self.verticalSpacer_2)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_25.addItem(self.verticalSpacer_3)
+
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_25.addItem(self.verticalSpacer_5)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_25.addItem(self.verticalSpacer_4)
+
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.verticalLayout_26 = QVBoxLayout()
+        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
+        self.textEdit_2 = QTextEdit(self.home)
         self.textEdit_2.setObjectName(u"textEdit_2")
         self.textEdit_2.setStyleSheet(u"background: transparent;")
 
-        self.verticalLayout_21.addWidget(self.textEdit_2)
+        self.verticalLayout_26.addWidget(self.textEdit_2)
 
-        self.horizontalLayout_6 = QHBoxLayout()
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.pushButtonOpenCamera = QPushButton(self.layoutWidget)
+        self.pushButtonOpenCamera = QPushButton(self.home)
         self.pushButtonOpenCamera.setObjectName(u"pushButtonOpenCamera")
         self.pushButtonOpenCamera.setStyleSheet(u"background: transparent;")
 
-        self.horizontalLayout_6.addWidget(self.pushButtonOpenCamera)
+        self.verticalLayout_26.addWidget(self.pushButtonOpenCamera)
 
+
+        self.horizontalLayout_12.addLayout(self.verticalLayout_26)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_8)
+
+
+        self.verticalLayout_25.addLayout(self.horizontalLayout_12)
+
+        self.verticalLayout_21 = QVBoxLayout()
+        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
 
         self.verticalLayout_21.addLayout(self.horizontalLayout_6)
+
+
+        self.verticalLayout_25.addLayout(self.verticalLayout_21)
 
         self.stackedWidget.addWidget(self.home)
         self.settings = QWidget()
@@ -1465,7 +1499,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

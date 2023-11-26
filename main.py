@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
     QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
 from . resources_rc import *
+from . resources import *
 '''
 
 import sys
@@ -47,6 +48,9 @@ class MainWindow(QMainWindow):
         logo = QPixmap('./images/images/image.png')
         self.logo = logo.scaled(58, 58, Qt.KeepAspectRatio)
         widgets.logoLabel.setPixmap(self.logo)
+        #a = QPixmap('/home/hellcat/Downloads/PIXNIO-2902163-1344x753.jpeg')
+        #pic = a.scaled(widgets.labelMainPicture.width(), widgets.labelMainPicture.height(), Qt.KeepAspectRatio)
+        #widgets.labelMainPicture.setPixmap(pic)
 
         self.darkTheme = True
 
@@ -88,8 +92,14 @@ class MainWindow(QMainWindow):
 
         self.frame_update_timer = QTimer()
         self.frame_update_timer.timeout.connect(self.update_frame)
+        self.camera_manager_timer = QTimer()
+        self.camera_manager_timer.timeout.connect(self.start_camera_manager)
+        self.camera_manager_timer.start(10)
+
+    def start_camera_manager(self):
         self.cameraHandler = CameraHandler()
         self.set_settings_window()
+        self.camera_manager_timer.stop()
 
     def open_camera_dashboard(self) -> None:
         widgets.pushButtonDashboard.click()
@@ -108,13 +118,13 @@ class MainWindow(QMainWindow):
 
     def set_settings_window(self) -> None:
         new_options = self.cameraHandler.get_options()
-        widgets.buttonMotionDetection.setChecked(bool(new_options['motion_detection']))
-        if new_options['face_id']:
-            widgets.buttonFaceID.setChecked(True)
-        if new_options['metadata']:
-            widgets.buttonMetadata.setChecked(True)
-        if new_options['subtitles']:
-            widgets.buttonTitles.setChecked(True)
+        widgets.buttonMotionDetection.setChecked(new_options['motion_detection'])
+        widgets.buttonFaceID.setChecked(new_options['face_id'])
+        widgets.buttonMetadata.setChecked(new_options['metadata'])
+        widgets.buttonTitles.setChecked(new_options['subtitles'])
+        widgets.horizontalSliderFramerate.setValue(new_options['framerate'])
+        widgets.horizontalSliderPrerecord.setValue(new_options['prerecord_time'])
+        widgets.horizontalSliderPostrecord.setValue(new_options['postrecord_time'])
 
     # BUTTONS CLICK
     def buttonClick(self):
@@ -134,7 +144,7 @@ class MainWindow(QMainWindow):
 
         elif btnName == "pushButtonDashboard":
             widgets.stackedWidget.setCurrentWidget(widgets.video_page) # SET PAGE
-            self.frame_update_timer.start(40)
+            self.frame_update_timer.start(50)
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
@@ -151,7 +161,10 @@ class MainWindow(QMainWindow):
                 'motion_detection': widgets.buttonMotionDetection.isChecked(),
                 'face_id': widgets.buttonFaceID.isChecked(),
                 'metadata': widgets.buttonMetadata.isChecked(),
-                'subtitles': widgets.buttonTitles.isChecked()
+                'subtitles': widgets.buttonTitles.isChecked(),
+                'prerecord_time': widgets.horizontalSliderPrerecord.value(),
+                'postrecord_time': widgets.horizontalSliderPostrecord.value(),
+                'framerate': widgets.horizontalSliderFramerate.value()
             }, update=True)
 
         elif btnName == "pushButtonOpenCFG":
@@ -181,11 +194,11 @@ class MainWindow(QMainWindow):
             logging.info(f'Saved config {config_name}')
 
         if btnName == "pushButtonExit":
-            sys.exit(0)
+            QCoreApplication.quit()
 
     def sliderFramerateUpdate(self, value):
         widgets.labelFramerate.setText(f'Framerate: {value} fps')
-    
+
     def sliderPrerecordUpdate(self, value):
         widgets.labelPrerecord.setText(f'Prerecord time: {value}s')
 
@@ -216,4 +229,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
-    sys.exit(app.exec())
+    try:
+        sys.exit(app.exec())
+    except SystemExit:
+        logging.info('Closing window...')

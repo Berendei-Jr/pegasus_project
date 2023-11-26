@@ -2,9 +2,9 @@
     "framerate": 10,
     "motion_detection": true,
     "face_id": false,
-    "subtitles": false,
-    "metadata": false,
-    "prerecord_time": 3,
-    "postrecord_time": 3,
+    "subtitles": true,
+    "metadata": true,
+    "prerecord_time": 2,
+    "postrecord_time": 1,
     "blind_areas": []
 }

@@ -2,9 +2,11 @@ import os
 import time
 import json
 import logging
+from pytz import timezone
+from datetime import datetime
 
 import cv2
-from video_utils.hardware_utils import write_frames_to_disk
+from video_utils.hardware_utils import write_frames_to_disk, add_metadata
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
@@ -13,12 +15,14 @@ DEFAULT_CONFIG_NAME = f'{os.getcwd()}/config.json'
 
 PRERECORD_STATE = -1
 MOTION_STATE = 0
-POSTRECORD_STATE = 1
+POSTRECORD_STATE = 18
 
 class CameraHandler:
     def __init__(self) -> None:
+        logging.info('Starting camera manager...')
         self.cap = cv2.VideoCapture("/home/hellcat/workspace/pegasus_project/images/IMG_0109.MOV")
         #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        #self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.75:554/user=admin&password=&channel=1&stream=0.sdp?')
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
             'motion_detection': False,
@@ -27,8 +31,11 @@ class CameraHandler:
             'metadata': False,
             'prerecord_time': DEFAULT_PRERECORD_TIME,
             'postrecord_time': DEFAULT_POSTRECORD_TIME,
-            'blind_areas': []
+            'blind_areas': [
+                [0, 0, 150, 300]
+            ]
         }
+
         self.load_config(DEFAULT_CONFIG_NAME)
         self.last_frame_update_time = time.time()
         self.frame_time = 1/self.options['framerate']
@@ -40,13 +47,15 @@ class CameraHandler:
         self.motion_detected = False
         self.record_state = PRERECORD_STATE
 
+        self.camera_type = 'IP camera'
+
         ret, self.current_frame = self.cap.read()
         if not ret:
             raise BufferError('Unable to read frame')
 
         self.current_show_frame = self.current_frame
         self.prerecord_frames.append(self.current_show_frame)
-        logging.info('Camera handler initialized')
+        logging.info('Camera manager started')
 
     def __del__(self):
         self.cap.release()
@@ -71,6 +80,10 @@ class CameraHandler:
             options['blind_areas'] = self.options['blind_areas']
 
         self.options |= options
+        self.frame_time = 1/self.options['framerate']
+        self.prerecord_frames_number = self.options['prerecord_time']//self.frame_time
+        self.postrecord_frames_number = self.options['postrecord_time']//self.frame_time
+        logging.info('Options have been updated')
 
     def get_options(self) -> dict:
         return self.options
@@ -79,14 +92,17 @@ class CameraHandler:
         if not self.cap.isOpened():
             raise BufferError('Unable to read frame')
 
+        ret, new_frame = self.cap.read()
+        if not ret:
+            ret, new_frame = self.cap.read()
+            if not ret:
+                raise BufferError('Unable to read frame')
+
         cur_time = time.time()
         if cur_time - self.last_frame_update_time < self.frame_time:
             return self.current_show_frame
 
         self.last_frame_update_time = cur_time
-        ret, new_frame = self.cap.read()
-        if not ret:
-            raise BufferError('Unable to read frame')
 
         if self.options['motion_detection']:
             frame_for_show, self.motion_detected,  = self.__motion_detection(new_frame)
@@ -96,7 +112,6 @@ class CameraHandler:
             frame_for_show = new_frame
 
         if self.options['motion_detection']:
-            #logging.info(f'PRE: {len(self.prerecord_frames)}\nMOT: {len(self.motion_frames)}\nPOST: {len(self.postrecord_frames)}\n')
             if self.motion_detected:
                 if self.record_state == PRERECORD_STATE:
                     self.record_state = MOTION_STATE
@@ -118,10 +133,17 @@ class CameraHandler:
                 else:
                     self.postrecord_frames.append(frame_for_show)
                     if len(self.postrecord_frames) == self.postrecord_frames_number:
+                        dir_name = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
                         write_frames_to_disk(prerecord_frames = self.prerecord_frames,
-                                             record_frames=  self.motion_frames,
+                                             record_frames = self.motion_frames,
                                              postrecord_frames = self.postrecord_frames,
-                                             framerate = self.options['framerate'])
+                                             framerate = self.options['framerate'],
+                                             dir_name = dir_name)
+                        
+                        if self.options['metadata']:
+                            add_metadata(dir_name = dir_name,
+                                         camera_type = self.camera_type,
+                                         trigger = 'Motion detected')
                         self.prerecord_frames.clear()
                         self.motion_frames.clear()
                         self.postrecord_frames.clear()
@@ -134,6 +156,12 @@ class CameraHandler:
 
     def __motion_detection(self, new_frame):
         frame_for_show = self.current_frame.copy()
+        if self.options['subtitles']:
+            cur_time = datetime.now(tz=timezone('Europe/Moscow')).strftime("%d.%m.%Y %H:%M:%S")
+            height, width, channel = frame_for_show.shape
+            cv2.putText(frame_for_show, "{}".format(cur_time), (width-350, height-20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        
         diff = cv2.absdiff(self.current_frame, new_frame) # нахождение разницы двух кадров, которая проявляется лишь при изменении одного из них, т.е. с этого момента наша программа реагирует на любое движение.
         gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY) # перевод кадров в черно-белую градацию
         blur = cv2.GaussianBlur(gray, (5, 5), 0) # фильтрация лишних контуров
@@ -150,14 +178,20 @@ class CameraHandler:
                 # метод contourArea() по заданным contour точкам, здесь кортежу, вычисляет площадь зафиксированного объекта в каждый момент времени, это можно проверить
                 #print(cv2.contourArea(contour))
             
-                if cv2.contourArea(contour) < 700: # условие при котором площадь выделенного объекта меньше 700 px
+                if cv2.contourArea(contour) < 1000 or not self.__check_area(x, y, w, h): # условие при котором площадь выделенного объекта меньше 700 px
                     continue
 
                 motion_detected = True
                 cv2.rectangle(frame_for_show, (x, y), (x+w, y+h), (0, 255, 0), 2) # получение прямоугольника из точек кортежа
-                #cv2.putText(frame_for_show, "Status: {}".format("Dvigenie"), (10, 20),
-                #            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3, cv2.LINE_AA) # вставляем текст
-        cv2.putText(frame_for_show, "Time: {}".format(str(time.time())), (10, 20),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3, cv2.LINE_AA) # вставляем текст
-            #cv2.drawContours(frame1, сontours, -1, (0, 255, 0), 2) также можно было просто нарисовать контур объекта
+                #cv2.drawContours(frame1, сontours, -1, (0, 255, 0), 2) также можно было просто нарисовать контур объекта
+        
+        for area in self.options['blind_areas']:
+            cv2.rectangle(frame_for_show, (area[0], area[1]), (area[2], area[3]), (0, 0, 255), 2)
+
         return frame_for_show, motion_detected
+
+    def __check_area(self, x: int, y: int, w: int, h: int) -> bool:
+        for area in self.options['blind_areas']:
+            if x > area[0] and x+w < area[2] and y > area[1] and y+h < area[3]:
+                return False
+        return True

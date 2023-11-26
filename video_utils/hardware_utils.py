@@ -1,12 +1,13 @@
 import os
 import logging
-from datetime import datetime
+import subprocess
 
 import cv2
+import pyexiv2
 
 def write_frames_to_disk(prerecord_frames: list, record_frames: list,
-                         postrecord_frames: list, framerate = int):
-    dir_name = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+                         postrecord_frames: list, framerate: int,
+                         dir_name: str):
     os.mkdir(dir_name)
 
     full_video_frames = []
@@ -19,8 +20,8 @@ def write_frames_to_disk(prerecord_frames: list, record_frames: list,
 
     height, width, layers = full_video_frames[0].shape
     size = (width,height)
-    video_name = f'{dir_name}/video.avi'
-    out = cv2.VideoWriter(video_name,cv2.VideoWriter_fourcc(*'DIVX'), framerate, size)
+    video_name = f'{dir_name}/tmp.mp4'
+    out = cv2.VideoWriter(video_name,cv2.VideoWriter_fourcc(*'mp4v'), framerate, size)
 
     for frame in full_video_frames:
         out.write(frame)
@@ -31,3 +32,26 @@ def write_frames_to_disk(prerecord_frames: list, record_frames: list,
         cv2.imwrite('{}_{}.{}'.format(f'{dir_name}/frame', str(i), 'jpg'), frame)
         i += 1
     logging.info(f'{video_name} saved to disk')
+
+def add_metadata(dir_name: str, camera_type: str, trigger: str, video_title = '-'):
+    comment = f'Camera type: {camera_type}\nTrigger: {trigger}'
+    for root, dirs, files in os.walk(dir_name, topdown=False):
+        for file in files:
+            filename = os.path.join(root, file)
+            video_name = os.path.join(root, 'video.mp4')
+            if file.endswith('jpg'):
+                image = pyexiv2.Image(filename)
+
+                image.modify_exif({
+                    'Exif.Image.ImageDescription': comment
+                })
+                image.close()
+            elif file.endswith('mp4'):
+                subprocess.call(['ffmpeg', '-i', filename, '-c', 'copy', '-movflags',
+                                 'use_metadata_tags', '-map_metadata', '0', '-metadata',
+                                 f'title={video_title}\n{comment}', '-metadata', f'comment={comment}',
+                                 video_name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:
+                logging.error(f'Unknown file type: {filename}')
+                return
+            logging.info(f'Metadata for folder {dir_name} has been written')
