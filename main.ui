@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1444</width>
-    <height>902</height>
+    <width>1173</width>
+    <height>747</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -916,7 +916,7 @@ Button */
                    <string notr="true">background-image: url(:/icons/images/icons/cil-movie.png);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>SD card video</string>
                   </property>
                  </widget>
                 </item>
@@ -2011,7 +2011,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="sizePolicy">
@@ -2349,6 +2349,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           </item>
                           <item>
                            <widget class="QCheckBox" name="buttonMotionDetection">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="text">
                              <string>Enable motion detection</string>
                             </property>
@@ -2356,6 +2359,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           </item>
                           <item>
                            <widget class="QCheckBox" name="buttonFaceID">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="text">
                              <string>Enable FaceID</string>
                             </property>
@@ -2363,6 +2369,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           </item>
                           <item>
                            <widget class="QCheckBox" name="buttonMetadata">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="text">
                              <string>Enable metadata</string>
                             </property>
@@ -2370,6 +2379,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           </item>
                           <item>
                            <widget class="QCheckBox" name="buttonTitles">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="text">
                              <string>Enable titles</string>
                             </property>
@@ -2637,12 +2649,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
                       </layout>
                      </widget>
                      <widget class="QWidget" name="video_page">
-                      <layout class="QVBoxLayout" name="verticalLayout_20">
+                      <layout class="QHBoxLayout" name="horizontalLayout_10">
                        <item>
                         <widget class="QLabel" name="videoLabel">
                          <property name="minimumSize">
                           <size>
-                           <width>0</width>
+                           <width>850</width>
                            <height>560</height>
                           </size>
                          </property>
@@ -2655,43 +2667,133 @@ li.checked::marker { content: &quot;\2612&quot;; }
                         </widget>
                        </item>
                        <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_10">
+                        <layout class="QVBoxLayout" name="verticalLayout_20">
                          <item>
-                          <spacer name="horizontalSpacer_5">
+                          <widget class="QLineEdit" name="lineEditEventName">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>200</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="baseSize">
+                            <size>
+                             <width>90</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>Event name</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButtonStartRecord">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>200</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="cursor">
+                            <cursorShape>PointingHandCursor</cursorShape>
+                           </property>
+                           <property name="text">
+                            <string>Start recording</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pushButtonStopRecord">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>200</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="cursor">
+                            <cursorShape>PointingHandCursor</cursorShape>
+                           </property>
+                           <property name="text">
+                            <string>Stop recording</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="verticalSpacer_6">
                            <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
+                            <enum>Qt::Vertical</enum>
                            </property>
                            <property name="sizeHint" stdset="0">
                             <size>
-                             <width>40</width>
-                             <height>20</height>
+                             <width>20</width>
+                             <height>40</height>
                             </size>
                            </property>
                           </spacer>
                          </item>
                          <item>
-                          <widget class="QPushButton" name="pushButtonConfirmBlindZones">
+                          <widget class="QPushButton" name="pushButtonResetBlindZones">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimumSize">
                             <size>
                              <width>200</width>
                              <height>25</height>
                             </size>
                            </property>
+                           <property name="cursor">
+                            <cursorShape>PointingHandCursor</cursorShape>
+                           </property>
                            <property name="text">
-                            <string>Confirm blind zones</string>
+                            <string>Reset blind zones</string>
                            </property>
                           </widget>
                          </item>
                          <item>
-                          <widget class="QPushButton" name="pushButtonResetBlindZones">
+                          <widget class="QPushButton" name="pushButtonConfirmBlindZones">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimumSize">
                             <size>
                              <width>200</width>
                              <height>25</height>
                             </size>
                            </property>
+                           <property name="cursor">
+                            <cursorShape>PointingHandCursor</cursorShape>
+                           </property>
                            <property name="text">
-                            <string>Reset blind zones</string>
+                            <string>Confirm blind zones</string>
                            </property>
                           </widget>
                          </item>

@@ -54,4 +54,4 @@ def add_metadata(dir_name: str, camera_type: str, trigger: str, video_title = '-
             else:
                 logging.error(f'Unknown file type: {filename}')
                 return
-            logging.info(f'Metadata for folder {dir_name} has been written')
+        logging.info(f'Metadata for folder {dir_name} has been written')

@@ -20,8 +20,8 @@ POSTRECORD_STATE = 18
 class CameraHandler:
     def __init__(self) -> None:
         logging.info('Starting camera manager...')
-        self.cap = cv2.VideoCapture("/home/hellcat/workspace/pegasus_project/images/IMG_0109.MOV")
-        #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        #self.cap = cv2.VideoCapture("/home/hellcat/workspace/pegasus_project/images/IMG_0109.MOV")
+        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
         #self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.75:554/user=admin&password=&channel=1&stream=0.sdp?')
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
@@ -46,6 +46,7 @@ class CameraHandler:
         self.postrecord_frames = []
         self.motion_detected = False
         self.record_state = PRERECORD_STATE
+        self.on_manual_record = False
 
         self.camera_type = 'IP camera'
 
@@ -153,6 +154,12 @@ class CameraHandler:
         self.current_show_frame = frame_for_show
         self.current_frame = new_frame
         return frame_for_show
+
+    def start_manual_record(self, name: str) -> None:
+        pass
+
+    def stop_manual_record(self) -> None:
+        pass
 
     def __motion_detection(self, new_frame):
         frame_for_show = self.current_frame.copy()

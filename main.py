@@ -73,6 +73,8 @@ class MainWindow(QMainWindow):
         widgets.pushButtonSaveConfig.clicked.connect(self.buttonClick)
         widgets.pushButtonApply.clicked.connect(self.buttonClick)
         widgets.pushButtonOpenCFG.clicked.connect(self.buttonClick)
+        widgets.pushButtonStartRecord.clicked.connect(self.buttonClick)
+        widgets.pushButtonStopRecord.clicked.connect(self.buttonClick)
 
         widgets.horizontalSliderFramerate.valueChanged.connect(self.sliderFramerateUpdate)
         widgets.horizontalSliderPrerecord.valueChanged.connect(self.sliderPrerecordUpdate)
@@ -193,8 +195,11 @@ class MainWindow(QMainWindow):
 
             logging.info(f'Saved config {config_name}')
 
-        if btnName == "pushButtonExit":
+        elif btnName == "pushButtonExit":
             QCoreApplication.quit()
+        
+        elif btnName == "pushButtonStartRecord":
+
 
     def sliderFramerateUpdate(self, value):
         widgets.labelFramerate.setText(f'Framerate: {value} fps')
