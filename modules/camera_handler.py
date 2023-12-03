@@ -6,7 +6,7 @@ from pytz import timezone
 from datetime import datetime
 
 import cv2
-from video_utils.hardware_utils import write_frames_to_disk, add_metadata
+from . utils import save_custom_event_video, save_video_with_motion_detection, add_metadata
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
@@ -15,7 +15,8 @@ DEFAULT_CONFIG_NAME = f'{os.getcwd()}/config.json'
 
 PRERECORD_STATE = -1
 MOTION_STATE = 0
-POSTRECORD_STATE = 18
+POSTRECORD_STATE = 1
+MANUAL_RECORD_STATE = 2
 
 class CameraHandler:
     def __init__(self) -> None:
@@ -44,9 +45,12 @@ class CameraHandler:
         self.prerecord_frames = []
         self.motion_frames = []
         self.postrecord_frames = []
+        self.manual_record_frames = []
         self.motion_detected = False
         self.record_state = PRERECORD_STATE
         self.on_manual_record = False
+        self.manual_record_previous_state = False
+        self.custom_event_name = ''
 
         self.camera_type = 'IP camera'
 
@@ -112,7 +116,26 @@ class CameraHandler:
         else:
             frame_for_show = new_frame
 
-        if self.options['motion_detection']:
+        if self.on_manual_record:
+            self.prerecord_frames.clear()
+            self.motion_frames.clear()
+            self.postrecord_frames.clear()
+            self.record_state = MANUAL_RECORD_STATE
+            self.manual_record_frames.append(frame_for_show)
+        else:
+            if self.record_state == MANUAL_RECORD_STATE:
+                self.record_state = PRERECORD_STATE
+                dir_name = save_custom_event_video(frames = self.manual_record_frames,
+                                                   framerate = self.options['framerate'],
+                                                   event_name = self.custom_event_name)
+                if self.options['metadata']:
+                    add_metadata(dir_name = dir_name,
+                                 camera_type = self.camera_type,
+                                 trigger = self.custom_event_name,
+                                 video_title = self.custom_event_name)
+                self.manual_record_frames.clear()
+
+        if self.options['motion_detection'] and not self.on_manual_record:
             if self.motion_detected:
                 if self.record_state == PRERECORD_STATE:
                     self.record_state = MOTION_STATE
@@ -134,13 +157,13 @@ class CameraHandler:
                 else:
                     self.postrecord_frames.append(frame_for_show)
                     if len(self.postrecord_frames) == self.postrecord_frames_number:
-                        dir_name = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-                        write_frames_to_disk(prerecord_frames = self.prerecord_frames,
-                                             record_frames = self.motion_frames,
-                                             postrecord_frames = self.postrecord_frames,
-                                             framerate = self.options['framerate'],
-                                             dir_name = dir_name)
-                        
+                        dir_name = f'{os.getcwd()}/videos/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}'
+                        save_video_with_motion_detection(prerecord_frames = self.prerecord_frames,
+                                                         record_frames = self.motion_frames,
+                                                         postrecord_frames = self.postrecord_frames,
+                                                         framerate = self.options['framerate'],
+                                                         dir_name = dir_name)
+
                         if self.options['metadata']:
                             add_metadata(dir_name = dir_name,
                                          camera_type = self.camera_type,
@@ -156,10 +179,14 @@ class CameraHandler:
         return frame_for_show
 
     def start_manual_record(self, name: str) -> None:
-        pass
+        if self.on_manual_record:
+            return
+
+        self.on_manual_record = True
+        self.custom_event_name = name
 
     def stop_manual_record(self) -> None:
-        pass
+        self.on_manual_record = False
 
     def __motion_detection(self, new_frame):
         frame_for_show = self.current_frame.copy()
@@ -167,8 +194,12 @@ class CameraHandler:
             cur_time = datetime.now(tz=timezone('Europe/Moscow')).strftime("%d.%m.%Y %H:%M:%S")
             height, width, channel = frame_for_show.shape
             cv2.putText(frame_for_show, "{}".format(cur_time), (width-350, height-20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-        
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+
+            if self.on_manual_record:
+                cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (width-370, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+
         diff = cv2.absdiff(self.current_frame, new_frame) # нахождение разницы двух кадров, которая проявляется лишь при изменении одного из них, т.е. с этого момента наша программа реагирует на любое движение.
         gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY) # перевод кадров в черно-белую градацию
         blur = cv2.GaussianBlur(gray, (5, 5), 0) # фильтрация лишних контуров
@@ -184,14 +215,14 @@ class CameraHandler:
 
                 # метод contourArea() по заданным contour точкам, здесь кортежу, вычисляет площадь зафиксированного объекта в каждый момент времени, это можно проверить
                 #print(cv2.contourArea(contour))
-            
+
                 if cv2.contourArea(contour) < 1000 or not self.__check_area(x, y, w, h): # условие при котором площадь выделенного объекта меньше 700 px
                     continue
 
                 motion_detected = True
                 cv2.rectangle(frame_for_show, (x, y), (x+w, y+h), (0, 255, 0), 2) # получение прямоугольника из точек кортежа
                 #cv2.drawContours(frame1, сontours, -1, (0, 255, 0), 2) также можно было просто нарисовать контур объекта
-        
+
         for area in self.options['blind_areas']:
             cv2.rectangle(frame_for_show, (area[0], area[1]), (area[2], area[3]), (0, 0, 255), 2)
 

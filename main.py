@@ -21,7 +21,7 @@ import json
 
 from modules import *
 from widgets import *
-from video_utils.camera_handler import CameraHandler
+from modules.camera_handler import CameraHandler
 
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
@@ -48,9 +48,6 @@ class MainWindow(QMainWindow):
         logo = QPixmap('./images/images/image.png')
         self.logo = logo.scaled(58, 58, Qt.KeepAspectRatio)
         widgets.logoLabel.setPixmap(self.logo)
-        #a = QPixmap('/home/hellcat/Downloads/PIXNIO-2902163-1344x753.jpeg')
-        #pic = a.scaled(widgets.labelMainPicture.width(), widgets.labelMainPicture.height(), Qt.KeepAspectRatio)
-        #widgets.labelMainPicture.setPixmap(pic)
 
         self.darkTheme = True
 
@@ -197,9 +194,16 @@ class MainWindow(QMainWindow):
 
         elif btnName == "pushButtonExit":
             QCoreApplication.quit()
-        
-        elif btnName == "pushButtonStartRecord":
 
+        elif btnName == "pushButtonStartRecord":
+            event_name = widgets.lineEditEventName.text()
+            if not event_name:
+                event_name = 'Unnamed event'
+
+            self.cameraHandler.start_manual_record(event_name)
+
+        elif btnName == "pushButtonStopRecord":
+            self.cameraHandler.stop_manual_record()
 
     def sliderFramerateUpdate(self, value):
         widgets.labelFramerate.setText(f'Framerate: {value} fps')
