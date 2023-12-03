@@ -161,3 +161,6 @@ cython_debug/
 images/IMG_2026.MP4
 images/IMG_0109.MOV
 test.py
+
+faces_db/
+videos/

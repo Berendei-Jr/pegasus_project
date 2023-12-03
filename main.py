@@ -14,10 +14,10 @@ from . resources_rc import *
 from . resources import *
 '''
 
-import sys
 import os
-import logging
+import sys
 import json
+import logging
 
 from modules import *
 from widgets import *
@@ -82,9 +82,6 @@ class MainWindow(QMainWindow):
             UIFunctions.toggleLeftBox(self, True)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
-        # SHOW APPdirectory=os.getcwd()
-        self.show()
-
         # SET HOME PAGE AND SELECT MENU
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.pushButtonHome.setStyleSheet(UIFunctions.selectMenu(widgets.pushButtonHome.styleSheet()))
@@ -93,12 +90,16 @@ class MainWindow(QMainWindow):
         self.frame_update_timer.timeout.connect(self.update_frame)
         self.camera_manager_timer = QTimer()
         self.camera_manager_timer.timeout.connect(self.start_camera_manager)
-        self.camera_manager_timer.start(10)
+        self.camera_manager_timer.start(20)
+
+    def camera_stream_update_frame(self):
+        self.cameraHandler.update_frame()
 
     def start_camera_manager(self):
         self.cameraHandler = CameraHandler()
         self.set_settings_window()
         self.camera_manager_timer.stop()
+        self.show()
 
     def open_camera_dashboard(self) -> None:
         widgets.pushButtonDashboard.click()
@@ -143,7 +144,7 @@ class MainWindow(QMainWindow):
 
         elif btnName == "pushButtonDashboard":
             widgets.stackedWidget.setCurrentWidget(widgets.video_page) # SET PAGE
-            self.frame_update_timer.start(50)
+            self.frame_update_timer.start(20)
             UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
 
@@ -235,6 +236,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(message)s')
 
+    #asyncio.run(start_camera_wrapper(camera_wrapper, 'ip'))
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()

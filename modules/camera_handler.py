@@ -2,16 +2,20 @@ import os
 import time
 import json
 import logging
+from threading import Thread
 from pytz import timezone
 from datetime import datetime
+from pathlib import Path
 
 import cv2
+import face_recognition
 from . utils import save_custom_event_video, save_video_with_motion_detection, add_metadata
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
 DEFAULT_POSTRECORD_TIME = 3
 DEFAULT_CONFIG_NAME = f'{os.getcwd()}/config.json'
+FACES_DATABASE_FOLDER = f'{os.getcwd()}/faces_db'
 
 PRERECORD_STATE = -1
 MOTION_STATE = 0
@@ -21,9 +25,9 @@ MANUAL_RECORD_STATE = 2
 class CameraHandler:
     def __init__(self) -> None:
         logging.info('Starting camera manager...')
-        #self.cap = cv2.VideoCapture("/home/hellcat/workspace/pegasus_project/images/IMG_0109.MOV")
-        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
-        #self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.75:554/user=admin&password=&channel=1&stream=0.sdp?')
+        #self.cap = cv2.VideoCapture("/home/hellcat/Downloads/IMG_0109 (online-video-cutter.com).mp4")
+        #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
             'motion_detection': False,
@@ -51,20 +55,36 @@ class CameraHandler:
         self.on_manual_record = False
         self.manual_record_previous_state = False
         self.custom_event_name = ''
-
+        self.face_id_db = []
+        self.face_id_db_encodings = []
         self.camera_type = 'IP camera'
+        self.frame = None
 
-        ret, self.current_frame = self.cap.read()
-        if not ret:
-            raise BufferError('Unable to read frame')
+        self.thread = Thread(target=self.update, args=())
+        self.thread.daemon = True
+        self.thread.start()
+        time.sleep(0.5)
 
-        self.current_show_frame = self.current_frame
+        if self.options['face_id']:
+            self.__load_face_db()
+
+        self.current_frame = self.current_show_frame = self.frame
         self.prerecord_frames.append(self.current_show_frame)
         logging.info('Camera manager started')
 
     def __del__(self):
         self.cap.release()
         cv2.destroyAllWindows()
+
+    def update(self):
+        while True:
+            if self.cap.isOpened():
+                (ret, self.frame) = self.cap.read()
+                if not ret:
+                    (ret, self.frame) = self.cap.read()
+                    if not ret:
+                        raise BufferError('Unable to read frame')
+            time.sleep(0.01)
 
     def load_config(self, config_path: str) -> bool:
         if not config_path or not os.path.exists(config_path):
@@ -97,16 +117,11 @@ class CameraHandler:
         if not self.cap.isOpened():
             raise BufferError('Unable to read frame')
 
-        ret, new_frame = self.cap.read()
-        if not ret:
-            ret, new_frame = self.cap.read()
-            if not ret:
-                raise BufferError('Unable to read frame')
-
         cur_time = time.time()
         if cur_time - self.last_frame_update_time < self.frame_time:
             return self.current_show_frame
 
+        new_frame = self.frame
         self.last_frame_update_time = cur_time
 
         if self.options['motion_detection']:
@@ -173,9 +188,23 @@ class CameraHandler:
                         self.postrecord_frames.clear()
                         self.record_state = PRERECORD_STATE
 
+        #Face ID
+        if self.options['face_id']:
+            face_encoding = face_recognition.face_encodings(self.current_frame)
+            if len(face_encoding):
+                face_encoding = face_encoding[0]
+                results = face_recognition.compare_faces(self.face_id_db_encodings, face_encoding)
+                for i in range(len(results)):
+                    if results[i]:
+                        name = self.face_id_db[i]
+                        frame_for_show = self.__add_face_to_frame(frame_for_show, name)
+                        logging.info(f'Detected person: {name}')
+                        break
+                logging.info('Detected unknown person')
+
         frame_for_show = cv2.cvtColor(frame_for_show, cv2.COLOR_BGR2RGB)
         self.current_show_frame = frame_for_show
-        self.current_frame = new_frame
+        self.current_frame = new_frame    
         return frame_for_show
 
     def start_manual_record(self, name: str) -> None:
@@ -197,7 +226,8 @@ class CameraHandler:
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
             if self.on_manual_record:
-                cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (width-370, 30),
+                horizontal_offset = len(self.custom_event_name)*15+180
+                cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (width-horizontal_offset, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
         diff = cv2.absdiff(self.current_frame, new_frame) # нахождение разницы двух кадров, которая проявляется лишь при изменении одного из них, т.е. с этого момента наша программа реагирует на любое движение.
@@ -233,3 +263,19 @@ class CameraHandler:
             if x > area[0] and x+w < area[2] and y > area[1] and y+h < area[3]:
                 return False
         return True
+
+    def __load_face_db(self):
+        self.face_id_db.clear()
+        for root, dirs, files in os.walk(FACES_DATABASE_FOLDER, topdown=False):
+            for file in files:
+                image = face_recognition.load_image_file(os.path.join(root, file))
+                face_encoding = face_recognition.face_encodings(image)[0]
+                self.face_id_db.append(Path(file).stem)
+                self.face_id_db_encodings.append(face_encoding)
+        logging.info(f'Faces database with {len(self.face_id_db)} images loaded')
+
+    def __add_face_to_frame(self, frame, name):
+        height, width, channel = frame.shape
+        cv2.putText(frame, "Detected person: {}".format(name), (20, height-20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+        return frame
