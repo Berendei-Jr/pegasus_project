@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="images">
-    <file>images/images/PIXNIO-2902157-1344x753.png</file>
+    <file>images/images/background.jpg</file>
 
   </qresource>
   <qresource prefix="icons">

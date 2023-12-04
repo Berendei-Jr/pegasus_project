@@ -2,14 +2,15 @@ import os
 import time
 import json
 import logging
-from threading import Thread, Event
-from pytz import timezone
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
+from threading import Thread, Event
 
 import cv2
 import face_recognition
-from . utils import save_custom_event_video, save_video_with_motion_detection, add_metadata
+from pytz import timezone
+from . utils import (save_custom_event_video,
+                     save_video_with_motion_detection, add_metadata)
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
@@ -23,11 +24,19 @@ POSTRECORD_STATE = 1
 MANUAL_RECORD_STATE = 2
 
 class CameraHandler:
-    def __init__(self) -> None:
+    def __init__(self, camera_type: str) -> None:
         logging.info('Starting camera manager...')
+        self.camera_type = camera_type
+        if self.camera_type == 'USB camera':
+            self.cap = cv2.VideoCapture("/home/hellcat/Downloads/IMG_0109 (online-video-cutter.com).mp4")
+        elif self.camera_type == 'IP camera':
+            self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
+        elif self.camera_type == 'WEB camera':
+            self.cap = cv2.VideoCapture(0) # видео поток с веб камеры
+        else:
+            raise NameError(f'Unknown camera type: {self.camera_type}')
+
         #self.cap = cv2.VideoCapture("/home/hellcat/Downloads/IMG_0109 (online-video-cutter.com).mp4")
-        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
-        #self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
             'motion_detection': False,
@@ -57,7 +66,6 @@ class CameraHandler:
         self.custom_event_name = ''
         self.face_id_db = []
         self.face_id_db_encodings = []
-        self.camera_type = 'IP camera'
         self.frame = None
 
         self.thread = Thread(target=self.update, args=())
@@ -65,8 +73,6 @@ class CameraHandler:
         self.stop_event = Event()
         self.stop_event.clear()
         self.thread.start()
-
-        time.sleep(0.1)
 
         if self.options['face_id']:
             self.__load_face_db()
@@ -92,7 +98,7 @@ class CameraHandler:
             if self.camera_type == 'ip':
                 time.sleep(0.01)
             else:
-                time.sleep(0.033)
+                time.sleep(self.frame_time)
 
     def load_config(self, config_path: str) -> bool:
         if not config_path or not os.path.exists(config_path):

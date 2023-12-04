@@ -78,5 +78,3 @@ def write_video_to_disk(frames: list, dir_name: str, framerate: int, size: tuple
         cv2.imwrite('{}_{}.{}'.format(f'{dir_name}/frame', str(i), 'jpg'), frame)
         i += 1
     logging.info(f'{video_name} saved to disk')
-
-

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'maingxczSe.ui'
+## Form generated from reading UI file 'mainEhCDyC.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider, QRadioButton)
 from . resources_rc import *
 from . resources import *
 
@@ -565,6 +565,7 @@ class Ui_MainWindow(object):
         self.appMargins.setContentsMargins(10, 10, 10, 10)
         self.bgApp = QFrame(self.styleSheet)
         self.bgApp.setObjectName(u"bgApp")
+        self.bgApp.setMinimumSize(QSize(1000, 700))
         self.bgApp.setStyleSheet(u"")
         self.bgApp.setFrameShape(QFrame.NoFrame)
         self.bgApp.setFrameShadow(QFrame.Raised)
@@ -1107,62 +1108,51 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.home.sizePolicy().hasHeightForWidth())
         self.home.setSizePolicy(sizePolicy3)
-        self.home.setStyleSheet(u"background-image: url(:/images/images/images/PIXNIO-2902157-1344x753.png);\n"
+        self.home.setStyleSheet(u"background-image: url(:/images/images/images/background.jpg);\n"
 "background-position: center;\n"
 "background-repeat: no-repeat;")
         self.verticalLayout_25 = QVBoxLayout(self.home)
         self.verticalLayout_25.setObjectName(u"verticalLayout_25")
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_25.addItem(self.verticalSpacer_2)
-
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_25.addItem(self.verticalSpacer_3)
-
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_25.addItem(self.verticalSpacer_5)
-
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_25.addItem(self.verticalSpacer_4)
-
-        self.horizontalLayout_12 = QHBoxLayout()
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.verticalLayout_26 = QVBoxLayout()
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
-        self.textEdit_2 = QTextEdit(self.home)
-        self.textEdit_2.setObjectName(u"textEdit_2")
-        self.textEdit_2.setStyleSheet(u"background: transparent;")
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.verticalLayout_26.addWidget(self.textEdit_2)
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_5)
+
+        self.verticalLayout_27 = QVBoxLayout()
+        self.verticalLayout_27.setObjectName(u"verticalLayout_27")
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_27.addItem(self.verticalSpacer_2)
+
+        self.label_3 = QLabel(self.home)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setMinimumSize(QSize(700, 0))
+        self.label_3.setStyleSheet(u"background: transparent;")
+
+        self.verticalLayout_27.addWidget(self.label_3)
 
         self.pushButtonOpenCamera = QPushButton(self.home)
         self.pushButtonOpenCamera.setObjectName(u"pushButtonOpenCamera")
-        self.pushButtonOpenCamera.setStyleSheet(u"background: transparent;")
+        self.pushButtonOpenCamera.setMinimumSize(QSize(200, 25))
+        self.pushButtonOpenCamera.setMaximumSize(QSize(400, 16777215))
 
-        self.verticalLayout_26.addWidget(self.pushButtonOpenCamera)
-
-
-        self.horizontalLayout_12.addLayout(self.verticalLayout_26)
-
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_12.addItem(self.horizontalSpacer_8)
+        self.verticalLayout_27.addWidget(self.pushButtonOpenCamera, 0, Qt.AlignHCenter)
 
 
-        self.verticalLayout_25.addLayout(self.horizontalLayout_12)
+        self.horizontalLayout_6.addLayout(self.verticalLayout_27)
 
-        self.verticalLayout_21 = QVBoxLayout()
-        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
-        self.horizontalLayout_6 = QHBoxLayout()
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalSpacer_8 = QSpacerItem(400, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.verticalLayout_21.addLayout(self.horizontalLayout_6)
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_8)
 
 
-        self.verticalLayout_25.addLayout(self.verticalLayout_21)
+        self.verticalLayout_26.addLayout(self.horizontalLayout_6)
+
+
+        self.verticalLayout_25.addLayout(self.verticalLayout_26)
 
         self.stackedWidget.addWidget(self.home)
         self.settings = QWidget()
@@ -1258,6 +1248,28 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_16.addWidget(self.frame_div_content_1)
+
+        self.label = QLabel(self.row_1)
+        self.label.setObjectName(u"label")
+        self.label.setMinimumSize(QSize(0, 30))
+
+        self.verticalLayout_16.addWidget(self.label)
+
+        self.radioButtonIP = QRadioButton(self.row_1)
+        self.radioButtonIP.setObjectName(u"radioButtonIP")
+
+        self.verticalLayout_16.addWidget(self.radioButtonIP)
+
+        self.radioButtonUSB = QRadioButton(self.row_1)
+        self.radioButtonUSB.setObjectName(u"radioButtonUSB")
+
+        self.verticalLayout_16.addWidget(self.radioButtonUSB)
+
+        self.label_2 = QLabel(self.row_1)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMinimumSize(QSize(0, 30))
+
+        self.verticalLayout_16.addWidget(self.label_2)
 
         self.buttonMotionDetection = QCheckBox(self.row_1)
         self.buttonMotionDetection.setObjectName(u"buttonMotionDetection")
@@ -1539,7 +1551,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1598,20 +1610,17 @@ class Ui_MainWindow(object):
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
-        self.textEdit_2.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:20pt; font-style:italic;\">Welcome to Pegasus Project! Click button below to open the dashboard.</span></p></body></html>", None))
-        self.pushButtonOpenCamera.setText(QCoreApplication.translate("MainWindow", u"Open dashboard", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:700; font-style:italic; color:#ffaaff;\">Welcome to Pegasus Project!</span></p></body></html>", None))
+        self.pushButtonOpenCamera.setText(QCoreApplication.translate("MainWindow", u"Open Dashboard", None))
         self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.pushButtonOpenCFG.setText(QCoreApplication.translate("MainWindow", u"Open", None))
         self.lineEditCFG.setText("")
         self.lineEditCFG.setPlaceholderText(QCoreApplication.translate("MainWindow", u".json file", None))
         self.pushButtonLoadConfig.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Camera type", None))
+        self.radioButtonIP.setText(QCoreApplication.translate("MainWindow", u"IP camera", None))
+        self.radioButtonUSB.setText(QCoreApplication.translate("MainWindow", u"USB camera", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Video stream settings", None))
         self.buttonMotionDetection.setText(QCoreApplication.translate("MainWindow", u"Enable motion detection", None))
         self.buttonFaceID.setText(QCoreApplication.translate("MainWindow", u"Enable FaceID", None))
         self.buttonMetadata.setText(QCoreApplication.translate("MainWindow", u"Enable metadata", None))

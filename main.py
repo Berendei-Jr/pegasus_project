@@ -9,7 +9,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog, QSlider, QRadioButton)
 from . resources_rc import *
 from . resources import *
 '''
@@ -26,8 +26,9 @@ from modules.camera_handler import CameraHandler
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
 # SET AS GLOBAL WIDGETS
-# ///////////////////////////////////////////////////////////////
 widgets = None
+
+DEFAULT_CAMERA_TYPE = 'USB camera'
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -96,7 +97,8 @@ class MainWindow(QMainWindow):
         self.cameraHandler.update_frame()
 
     def start_camera_manager(self):
-        self.cameraHandler = CameraHandler()
+        widgets.radioButtonUSB.setChecked(True)
+        self.cameraHandler = CameraHandler(DEFAULT_CAMERA_TYPE)
         self.set_settings_window()
         self.camera_manager_timer.stop()
         self.show()
@@ -128,7 +130,6 @@ class MainWindow(QMainWindow):
 
     # BUTTONS CLICK
     def buttonClick(self):
-        # GET BUTTON CLICKED
         btn = self.sender()
         btnName = btn.objectName()
 
@@ -154,7 +155,6 @@ class MainWindow(QMainWindow):
             newTheme = 'themes/py_dracula_light.qss' if self.darkTheme else 'themes/py_dracula_dark.qss'
             self.darkTheme = not self.darkTheme
             UIFunctions.theme(self, newTheme, True)
-            #AppFunctions.setThemeHack(self)
 
         elif btnName == "pushButtonApply":
             self.cameraHandler.set_options({
