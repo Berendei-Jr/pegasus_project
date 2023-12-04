@@ -2,7 +2,7 @@ import os
 import time
 import json
 import logging
-from threading import Thread
+from threading import Thread, Event
 from pytz import timezone
 from datetime import datetime
 from pathlib import Path
@@ -26,8 +26,8 @@ class CameraHandler:
     def __init__(self) -> None:
         logging.info('Starting camera manager...')
         #self.cap = cv2.VideoCapture("/home/hellcat/Downloads/IMG_0109 (online-video-cutter.com).mp4")
-        #self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
-        self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
+        self.cap = cv2.VideoCapture(0); # видео поток с веб камеры
+        #self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
         self.options = {
             'framerate': DEFAULT_FRAMERATE,
             'motion_detection': False,
@@ -62,8 +62,11 @@ class CameraHandler:
 
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
+        self.stop_event = Event()
+        self.stop_event.clear()
         self.thread.start()
-        time.sleep(0.5)
+
+        time.sleep(0.1)
 
         if self.options['face_id']:
             self.__load_face_db()
@@ -72,19 +75,24 @@ class CameraHandler:
         self.prerecord_frames.append(self.current_show_frame)
         logging.info('Camera manager started')
 
-    def __del__(self):
+    def stop(self):
+        self.stop_event.set()
+        self.thread.join()
         self.cap.release()
         cv2.destroyAllWindows()
 
     def update(self):
-        while True:
+        while not self.stop_event.is_set():
             if self.cap.isOpened():
                 (ret, self.frame) = self.cap.read()
                 if not ret:
                     (ret, self.frame) = self.cap.read()
                     if not ret:
                         raise BufferError('Unable to read frame')
-            time.sleep(0.01)
+            if self.camera_type == 'ip':
+                time.sleep(0.01)
+            else:
+                time.sleep(0.033)
 
     def load_config(self, config_path: str) -> bool:
         if not config_path or not os.path.exists(config_path):
@@ -114,9 +122,6 @@ class CameraHandler:
         return self.options
 
     def get_frame(self):
-        if not self.cap.isOpened():
-            raise BufferError('Unable to read frame')
-
         cur_time = time.time()
         if cur_time - self.last_frame_update_time < self.frame_time:
             return self.current_show_frame
@@ -192,15 +197,19 @@ class CameraHandler:
         if self.options['face_id']:
             face_encoding = face_recognition.face_encodings(self.current_frame)
             if len(face_encoding):
+                face_location = face_recognition.face_locations(self.current_frame)[0]
+                frame_for_show = self.__add_face_rectangle(face_location, frame_for_show)
                 face_encoding = face_encoding[0]
                 results = face_recognition.compare_faces(self.face_id_db_encodings, face_encoding)
                 for i in range(len(results)):
                     if results[i]:
                         name = self.face_id_db[i]
-                        frame_for_show = self.__add_face_to_frame(frame_for_show, name)
+                        frame_for_show = self.__add_face_name(frame_for_show, name)
                         logging.info(f'Detected person: {name}')
                         break
-                logging.info('Detected unknown person')
+                else:
+                    frame_for_show = self.__add_face_name(frame_for_show, 'Unknown person')
+                    logging.info('Detected unknown person')
 
         frame_for_show = cv2.cvtColor(frame_for_show, cv2.COLOR_BGR2RGB)
         self.current_show_frame = frame_for_show
@@ -222,12 +231,11 @@ class CameraHandler:
         if self.options['subtitles']:
             cur_time = datetime.now(tz=timezone('Europe/Moscow')).strftime("%d.%m.%Y %H:%M:%S")
             height, width, channel = frame_for_show.shape
-            cv2.putText(frame_for_show, "{}".format(cur_time), (width-350, height-20),
+            cv2.putText(frame_for_show, "{}".format(cur_time), (15, height-20),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
             if self.on_manual_record:
-                horizontal_offset = len(self.custom_event_name)*15+180
-                cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (width-horizontal_offset, 30),
+                cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (15, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
         diff = cv2.absdiff(self.current_frame, new_frame) # нахождение разницы двух кадров, которая проявляется лишь при изменении одного из них, т.е. с этого момента наша программа реагирует на любое движение.
@@ -274,8 +282,12 @@ class CameraHandler:
                 self.face_id_db_encodings.append(face_encoding)
         logging.info(f'Faces database with {len(self.face_id_db)} images loaded')
 
-    def __add_face_to_frame(self, frame, name):
+    def __add_face_name(self, frame, name):
         height, width, channel = frame.shape
-        cv2.putText(frame, "Detected person: {}".format(name), (20, height-20),
+        cv2.putText(frame, "Detected person: {}".format(name), (15, height-60),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+        return frame
+
+    def __add_face_rectangle(self, face_location, frame):
+        cv2.rectangle(frame, (face_location[3], face_location[0]),(face_location[1], face_location[2]), (255,0,0), 1)
         return frame

@@ -194,6 +194,7 @@ class MainWindow(QMainWindow):
             logging.info(f'Saved config {config_name}')
 
         elif btnName == "pushButtonExit":
+            self.cameraHandler.stop()
             QCoreApplication.quit()
 
         elif btnName == "pushButtonStartRecord":
