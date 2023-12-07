@@ -21,14 +21,13 @@ import logging
 
 from modules import *
 from widgets import *
-from modules.camera_handler import CameraHandler
+from modules.camera_handler import CameraHandler, IP_CAMERA_NAME, USB_CAMERA_NAME
 
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
 # SET AS GLOBAL WIDGETS
 widgets = None
-
-DEFAULT_CAMERA_TYPE = 'USB camera'
+DEBUG = True
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -98,7 +97,7 @@ class MainWindow(QMainWindow):
 
     def start_camera_manager(self):
         widgets.radioButtonUSB.setChecked(True)
-        self.cameraHandler = CameraHandler(DEFAULT_CAMERA_TYPE)
+        self.cameraHandler = CameraHandler()
         self.set_settings_window()
         self.camera_manager_timer.stop()
         self.show()
@@ -166,6 +165,12 @@ class MainWindow(QMainWindow):
                 'postrecord_time': widgets.horizontalSliderPostrecord.value(),
                 'framerate': widgets.horizontalSliderFramerate.value()
             }, update=True)
+
+            if DEBUG:
+                if widgets.radioButtonIP.isChecked():
+                    self.cameraHandler.switch_camera_type(IP_CAMERA_NAME)
+                else:
+                    self.cameraHandler.switch_camera_type(USB_CAMERA_NAME)
 
         elif btnName == "pushButtonOpenCFG":
             config_file = str(QFileDialog.getOpenFileName(self,

@@ -5,9 +5,15 @@ from pathlib import Path
 
 import cv2
 import pyexiv2
+from . stm32_drivers import create_directory, write_file
 
 def save_custom_event_video(frames: list, framerate: int, event_name: str) -> str:
     dir_name = f'{os.getcwd()}/videos/{event_name}'
+
+    if not len(frames):
+        logging.warning(f'Attempt to save empty video {dir_name}')
+        return
+
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
     else:
@@ -34,6 +40,10 @@ def save_video_with_motion_detection(prerecord_frames: list, record_frames: list
         full_video_frames.append(frame)
     for frame in postrecord_frames:
         full_video_frames.append(frame)
+    
+    if not len(full_video_frames):
+        logging.warning(f'Attempt to save empty video {dir_name}')
+        return
 
     height, width, layers = full_video_frames[0].shape
     size = (width,height)
@@ -41,7 +51,7 @@ def save_video_with_motion_detection(prerecord_frames: list, record_frames: list
 
 def add_metadata(dir_name: str, camera_type: str, trigger: str, video_title = '-'):
     comment = f'Camera type: {camera_type}\nTrigger: {trigger}'
-    for root, dirs, files in os.walk(dir_name, topdown=False):
+    for root, dirs, files in os.walk(dir_name):
         for file in files:
             filename = os.path.join(root, file)
             if file.endswith('jpg'):
@@ -78,3 +88,10 @@ def write_video_to_disk(frames: list, dir_name: str, framerate: int, size: tuple
         cv2.imwrite('{}_{}.{}'.format(f'{dir_name}/frame', str(i), 'jpg'), frame)
         i += 1
     logging.info(f'{video_name} saved to disk')
+
+def copy_directory_to_stm32(dir_name: str):
+    dir_name = Path(dir_name).stem
+    create_directory(dir_name)
+    for root, dirs, files in os.walk(dir_name):
+        for file in files:
+            write_file(dir_name, file, os.path.join(root, file))

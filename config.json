@@ -1,7 +1,7 @@
 {
-    "framerate": 15,
+    "framerate": 10,
     "motion_detection": true,
-    "face_id": true,
+    "face_id": false,
     "subtitles": true,
     "metadata": true,
     "prerecord_time": 1,

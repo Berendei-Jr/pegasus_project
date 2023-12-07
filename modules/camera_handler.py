@@ -4,13 +4,14 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime
-from threading import Thread, Event
+from threading import Thread, Event, Condition
 
 import cv2
 import face_recognition
 from pytz import timezone
-from . utils import (save_custom_event_video,
+from . utils import (save_custom_event_video, copy_directory_to_stm32,
                      save_video_with_motion_detection, add_metadata)
+from . stm32_drivers import blink_led, get_frame
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
@@ -23,15 +24,20 @@ MOTION_STATE = 0
 POSTRECORD_STATE = 1
 MANUAL_RECORD_STATE = 2
 
+IP_CAMERA_NAME = 'IP camera'
+USB_CAMERA_NAME = 'USB camera'
+WEB_CAMERA_NAME = 'WEB camera'
+IP_CAMERA_STREAM = 'rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?'
+
 class CameraHandler:
-    def __init__(self, camera_type: str) -> None:
+    def __init__(self, camera_type: str = WEB_CAMERA_NAME) -> None:
         logging.info('Starting camera manager...')
         self.camera_type = camera_type
-        if self.camera_type == 'USB camera':
-            self.cap = cv2.VideoCapture("/home/hellcat/Downloads/IMG_0109 (online-video-cutter.com).mp4")
-        elif self.camera_type == 'IP camera':
-            self.cap = cv2.VideoCapture('rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?')
-        elif self.camera_type == 'WEB camera':
+        if self.camera_type == USB_CAMERA_NAME:
+            self.cap = None
+        elif self.camera_type == IP_CAMERA_NAME:
+            self.cap = cv2.VideoCapture(IP_CAMERA_STREAM)
+        elif self.camera_type == WEB_CAMERA_NAME:
             self.cap = cv2.VideoCapture(0) # видео поток с веб камеры
         else:
             raise NameError(f'Unknown camera type: {self.camera_type}')
@@ -66,20 +72,37 @@ class CameraHandler:
         self.custom_event_name = ''
         self.face_id_db = []
         self.face_id_db_encodings = []
-        self.frame = None
 
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
+        self.pause_event = Event()
+        self.pause_event.set()
         self.stop_event = Event()
         self.stop_event.clear()
         self.thread.start()
+        self.cv = Condition()
+        self.led_state = False
 
         if self.options['face_id']:
             self.__load_face_db()
 
-        self.current_frame = self.current_show_frame = self.frame
+        self.current_frame = self.current_show_frame = self.frame = None
         self.prerecord_frames.append(self.current_show_frame)
         logging.info('Camera manager started')
+
+    def switch_camera_type(self, new_type: str):
+        if self.camera_type == new_type:
+            return
+        self.pause_event.set()
+        self.cap.release()
+        cv2.destroyAllWindows()
+        self.current_frame = self.current_show_frame = self.frame = None
+
+        if new_type == IP_CAMERA_NAME:
+            self.cap = cv2.VideoCapture(IP_CAMERA_STREAM)
+        else:
+            self.cap = None
+        self.camera_type = new_type
 
     def stop(self):
         self.stop_event.set()
@@ -88,13 +111,20 @@ class CameraHandler:
         cv2.destroyAllWindows()
 
     def update(self):
+        i = 0
         while not self.stop_event.is_set():
-            if self.cap.isOpened():
-                (ret, self.frame) = self.cap.read()
-                if not ret:
+            if not self.pause_event.is_set():
+                if self.cap is None and self.camera_type == USB_CAMERA_NAME:
+                    self.frame = cv2.imread(get_frame('/home/hellcat/workspace/pegasus_project/videos/Unnamed event(1)', i))
+                    i += 1
+                elif self.cap.isOpened():
                     (ret, self.frame) = self.cap.read()
                     if not ret:
-                        raise BufferError('Unable to read frame')
+                        (ret, self.frame) = self.cap.read()
+                        if not ret:
+                            raise BufferError('Unable to read frame')
+                with self.cv:
+                    self.cv.notify_all()
             if self.camera_type == 'ip':
                 time.sleep(0.01)
             else:
@@ -132,13 +162,26 @@ class CameraHandler:
         if cur_time - self.last_frame_update_time < self.frame_time:
             return self.current_show_frame
 
-        new_frame = self.frame
+        if self.pause_event.is_set():
+            self.pause_event.clear()
+            with self.cv:
+                self.cv.wait()
+            new_frame = self.current_frame = self.current_show_frame = self.frame
+        else:
+            new_frame = self.frame
+
         self.last_frame_update_time = cur_time
 
         if self.options['motion_detection']:
             frame_for_show, self.motion_detected,  = self.__motion_detection(new_frame)
             if self.motion_detected:
-                logging.info(f'Motion detected')
+                if not self.led_state:
+                    blink_led()
+                    self.led_state = True
+                logging.debug(f'Motion detected')
+            elif self.led_state:
+                blink_led(state = False)
+                self.led_state = False
         else:
             frame_for_show = new_frame
 
@@ -159,6 +202,7 @@ class CameraHandler:
                                  camera_type = self.camera_type,
                                  trigger = self.custom_event_name,
                                  video_title = self.custom_event_name)
+                copy_directory_to_stm32(dir_name)
                 self.manual_record_frames.clear()
 
         if self.options['motion_detection'] and not self.on_manual_record:
@@ -194,6 +238,7 @@ class CameraHandler:
                             add_metadata(dir_name = dir_name,
                                          camera_type = self.camera_type,
                                          trigger = 'Motion detected')
+                        copy_directory_to_stm32(dir_name)
                         self.prerecord_frames.clear()
                         self.motion_frames.clear()
                         self.postrecord_frames.clear()
@@ -242,7 +287,7 @@ class CameraHandler:
 
             if self.on_manual_record:
                 cv2.putText(frame_for_show, "Event: {}".format(self.custom_event_name), (15, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
         diff = cv2.absdiff(self.current_frame, new_frame) # нахождение разницы двух кадров, которая проявляется лишь при изменении одного из них, т.е. с этого момента наша программа реагирует на любое движение.
         gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY) # перевод кадров в черно-белую градацию
