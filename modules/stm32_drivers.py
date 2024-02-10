@@ -8,11 +8,10 @@ LED_STATUS_ON = 1
 LED_STATUS_BLINK_FAST = 2
 LED_STATUS_BLINK_SLOW = 3
 
-
 serv_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, proto=0)
 serv_sock.bind(('', 3333))
 serv_sock.listen(10)
-client_sock = 0
+client_sock: None
 
 def stm32_init():
     client_sock, client_addr = serv_sock.accept()
@@ -61,7 +60,6 @@ def write_file(dir_name: str, filename: str, host_file_path: str):
     f = open(host_file_path, "rb")
 
     i = 0
-    # print("writing...")
     startTime = time.time()
     while (data := f.read(460)):
         client_sock.send(b'w'+data)
@@ -81,5 +79,4 @@ def write_file(dir_name: str, filename: str, host_file_path: str):
 
 def get_frame(path: str, i):
     '''Get frame from STM32 and write it on the given path'''
-    
     return os.path.join(path, f'frame_{i}.jpg')

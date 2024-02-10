@@ -21,7 +21,7 @@ import logging
 
 from modules import *
 from widgets import *
-from modules.camera_handler import CameraHandler, IP_CAMERA_NAME, USB_CAMERA_NAME
+from modules.camera_handler import CameraHandler, IP_CAMERA_NAME, WEB_CAMERA_NAME
 
 os.environ["QT_FONT_DPI"] = "96" # FIX Problem for High DPI and Scale above 100%
 
@@ -96,7 +96,7 @@ class MainWindow(QMainWindow):
         self.cameraHandler.update_frame()
 
     def start_camera_manager(self):
-        widgets.radioButtonUSB.setChecked(True)
+        widgets.radioButtonWeb.setChecked(True)
         self.cameraHandler = CameraHandler()
         self.set_settings_window()
         self.camera_manager_timer.stop()
@@ -170,7 +170,7 @@ class MainWindow(QMainWindow):
                 if widgets.radioButtonIP.isChecked():
                     self.cameraHandler.switch_camera_type(IP_CAMERA_NAME)
                 else:
-                    self.cameraHandler.switch_camera_type(USB_CAMERA_NAME)
+                    self.cameraHandler.switch_camera_type(WEB_CAMERA_NAME)
 
         elif btnName == "pushButtonOpenCFG":
             config_file = str(QFileDialog.getOpenFileName(self,
@@ -239,7 +239,7 @@ class MainWindow(QMainWindow):
         #    print('Mouse click: RIGHT CLICK')
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(message)s')
 
     #asyncio.run(start_camera_wrapper(camera_wrapper, 'ip'))

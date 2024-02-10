@@ -11,7 +11,7 @@ import face_recognition
 from pytz import timezone
 from . utils import (save_custom_event_video, copy_directory_to_stm32,
                      save_video_with_motion_detection, add_metadata)
-from . stm32_drivers import blink_led, get_frame
+from . stm32_drivers import blink_led, get_frame, stm32_init
 
 DEFAULT_FRAMERATE = 10
 DEFAULT_PRERECORD_TIME = 3
@@ -25,17 +25,16 @@ POSTRECORD_STATE = 1
 MANUAL_RECORD_STATE = 2
 
 IP_CAMERA_NAME = 'IP camera'
-USB_CAMERA_NAME = 'USB camera'
 WEB_CAMERA_NAME = 'WEB camera'
-IP_CAMERA_STREAM = 'rtsp://admin:admin@192.168.1.69:554/user=admin&password=&channel=1&stream=0.sdp?'
+IP_CAMERA_STREAM = 'rtsp://admin:admin@192.168.1.241:554/user=admin&password=&channel=1&stream=0.sdp?'
 
 class CameraHandler:
     def __init__(self, camera_type: str = WEB_CAMERA_NAME) -> None:
+        logging.info('Waiting for stm32 connection...')
+        #stm32_init()
         logging.info('Starting camera manager...')
         self.camera_type = camera_type
-        if self.camera_type == USB_CAMERA_NAME:
-            self.cap = None
-        elif self.camera_type == IP_CAMERA_NAME:
+        if self.camera_type == IP_CAMERA_NAME:
             self.cap = cv2.VideoCapture(IP_CAMERA_STREAM)
         elif self.camera_type == WEB_CAMERA_NAME:
             self.cap = cv2.VideoCapture(0) # видео поток с веб камеры
@@ -111,13 +110,12 @@ class CameraHandler:
         cv2.destroyAllWindows()
 
     def update(self):
-        i = 0
         while not self.stop_event.is_set():
             if not self.pause_event.is_set():
-                if self.cap is None and self.camera_type == USB_CAMERA_NAME:
-                    self.frame = cv2.imread(get_frame('/home/hellcat/workspace/pegasus_project/videos/Unnamed event(1)', i))
-                    i += 1
-                elif self.cap.isOpened():
+                #if self.cap is None and self.camera_type == USB_CAMERA_NAME:
+                #    self.frame = cv2.imread(get_frame('/home/hellcat/workspace/pegasus_project/videos/Unnamed event(1)', i))
+                #    i += 1
+                if self.cap.isOpened():
                     (ret, self.frame) = self.cap.read()
                     if not ret:
                         (ret, self.frame) = self.cap.read()
@@ -125,7 +123,7 @@ class CameraHandler:
                             raise BufferError('Unable to read frame')
                 with self.cv:
                     self.cv.notify_all()
-            if self.camera_type == 'ip':
+            if self.camera_type == IP_CAMERA_NAME:
                 time.sleep(0.01)
             else:
                 time.sleep(self.frame_time)
@@ -176,11 +174,11 @@ class CameraHandler:
             frame_for_show, self.motion_detected,  = self.__motion_detection(new_frame)
             if self.motion_detected:
                 if not self.led_state:
-                    blink_led()
+                #    blink_led()
                     self.led_state = True
                 logging.debug(f'Motion detected')
             elif self.led_state:
-                blink_led(state = False)
+                #blink_led(state = False)
                 self.led_state = False
         else:
             frame_for_show = new_frame

@@ -1260,10 +1260,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_16.addWidget(self.radioButtonIP)
 
-        self.radioButtonUSB = QRadioButton(self.row_1)
-        self.radioButtonUSB.setObjectName(u"radioButtonUSB")
+        self.radioButtonWeb = QRadioButton(self.row_1)
+        self.radioButtonWeb.setObjectName(u"radioButtonWeb")
 
-        self.verticalLayout_16.addWidget(self.radioButtonUSB)
+        self.verticalLayout_16.addWidget(self.radioButtonWeb)
 
         self.label_2 = QLabel(self.row_1)
         self.label_2.setObjectName(u"label_2")
@@ -1619,7 +1619,7 @@ class Ui_MainWindow(object):
         self.pushButtonLoadConfig.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Camera type", None))
         self.radioButtonIP.setText(QCoreApplication.translate("MainWindow", u"IP camera", None))
-        self.radioButtonUSB.setText(QCoreApplication.translate("MainWindow", u"USB camera", None))
+        self.radioButtonWeb.setText(QCoreApplication.translate("MainWindow", u"Web camera", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Video stream settings", None))
         self.buttonMotionDetection.setText(QCoreApplication.translate("MainWindow", u"Enable motion detection", None))
         self.buttonFaceID.setText(QCoreApplication.translate("MainWindow", u"Enable FaceID", None))

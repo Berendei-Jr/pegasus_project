@@ -1,5 +1,5 @@
 {
-    "framerate": 10,
+    "framerate": 30,
     "motion_detection": true,
     "face_id": false,
     "subtitles": true,

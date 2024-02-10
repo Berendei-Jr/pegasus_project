@@ -2353,9 +2353,9 @@ background-repeat: no-repeat;</string>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QRadioButton" name="radioButtonUSB">
+                           <widget class="QRadioButton" name="radioButtonWeb">
                             <property name="text">
-                             <string>USB camera</string>
+                             <string>Web camera</string>
                             </property>
                            </widget>
                           </item>
