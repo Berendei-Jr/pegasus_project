@@ -7,6 +7,7 @@ Main features:
 - configurable postrecord time
 - face detection
 - configurable framerate
+- configurale "blind" zones
 - custom metadata and titles
 - ability to connect stm32 board for writing videos to HDD/SD
 
