@@ -10,5 +10,7 @@ Main features:
 - custom metadata and titles
 - ability to connect stm32 board for writing videos to HDD/SD
 
+## Usage:
+```./pegasus.sh```
 
 BMSTU ICS-8 2023
